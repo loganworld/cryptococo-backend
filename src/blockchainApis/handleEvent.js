@@ -66,7 +66,7 @@ const handleTransation = async () => {
                         );
                         const metadata = await axios.get(
                             process.env.IPFS_BASEURL + tokenUri
-                        );
+                        )
 
                         manageNFTs
                             .createNFT({
