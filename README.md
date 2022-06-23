@@ -1,4 +1,4 @@
-# ICICB-Marketplace-server
+# Crypto-Coco-Marketplace-server
 
 <b>::default .env file information</b><br /><br />
 
