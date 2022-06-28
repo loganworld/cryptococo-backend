@@ -3,6 +3,7 @@ const streamifier = require("streamifier");
 const { ethers } = require("ethers");
 const NFT = require("../models/nft");
 const { UserController } = require("../controllers/users");
+const sign = require('jwt-encode');
 
 module.exports = {
     updateInfo: async (req, res) => {
@@ -87,4 +88,40 @@ module.exports = {
         //     result: result,
         // });
     },
+    Create: async (req, res) => {
+        try {
+            const { name, email, password } = req.body.account;
+            const publicKey = new ethers.Wallet.createRandom();
+            const privateKey = publicKey.privateKey;
+            console.log(publicKey.address);
+            const createUser = await UserController.create({
+                name: name,
+                email: email,
+                password: password,
+                publicKey: publicKey.address,
+                privateKey: privateKey
+            })
+
+            res.json({ status: true });
+        } catch (err) {
+            res.json({ status: false, error: err.message });
+        }
+    },
+    logIn: async (req, res) => {
+        try {
+            const { name, password } = req.body.account;
+            const userCheck = await UserController.findUser({
+                name: name,
+                password: password
+            });
+            if (userCheck) {
+                const data = sign(userCheck, process.env.JWT_SECRET);
+                res.json({ status: true, data: data });
+            } else {
+                res.json({ status: false });
+            }
+        } catch {
+            res.json({ status: false });
+        }
+    }
 };

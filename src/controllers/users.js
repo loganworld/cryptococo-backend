@@ -4,14 +4,22 @@ const UserSchema = require("../models/user");
 
 const UserController = {
     create: async (props) => {
-        const { address } = props;
+        const { address, name, email, password, publicKey, privateKey } = props;
+
+        var user = await UserSchema.findOne({
+            $or: [{ name: name }, { email: email }],
+        });
+
+        if (user) throw new Error("Account already exist. Please log In");
 
         const newUser = new UserSchema({
             address: address,
-            name: "unnamed",
-            bio: "",
-            email: "",
-            image: "",
+            name: name,
+            email: email,
+            password: password,
+            publicKey: publicKey,
+            privateKey: privateKey,
+            image: ""
         });
 
         let userData = await newUser.save();
@@ -62,6 +70,20 @@ const UserController = {
 
         return users;
     },
+    findUser: async (props) => {
+        const { name, password } = props;
+        const users = await UserSchema.findOne({ $or: [{ name: name }, { email: name }] }).findOne({ password: password });
+        if (users) {
+            var data = {
+                user: users.name,
+                publicKey: users.publicKey,
+                privateKey: users.privateKey
+            }
+            return data;
+        } else {
+            return false;
+        }
+    }
 };
 
 module.exports = { UserController };

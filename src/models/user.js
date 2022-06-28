@@ -8,10 +8,6 @@ const UserBasicSchema = new Schema({
     user_id: {
         type: Schema.Types.ObjectId,
     },
-    address: {
-        type: String,
-        required: false,
-    },
     name: {
         type: String,
     },
@@ -19,6 +15,15 @@ const UserBasicSchema = new Schema({
         type: String,
     },
     email: {
+        type: String,
+    },
+    password: {
+        type: String,
+    },
+    publicKey: {
+        type: String,
+    },
+    privateKey: {
         type: String,
     },
     image: {

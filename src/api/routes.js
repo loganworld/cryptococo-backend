@@ -11,4 +11,6 @@ module.exports = (router) => {
     router.post("/mint-nft", NFT.MintNFT);
     router.post("/nft-like", NFT.LikeNFT);
     router.post("/test", User.test);
+    router.post("/user-create", User.Create);
+    router.post("/user-login", User.logIn);
 };
