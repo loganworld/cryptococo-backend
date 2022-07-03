@@ -72,12 +72,15 @@ const UserController = {
     },
     findUser: async (props) => {
         const { name, password } = props;
-        const user = await UserSchema.findOne({ $or: [{ name: name }, { email: name }] }).findOne({ password: password });
-        if (user) {
+        const users = await UserSchema.findOne({ $or: [{ name: name }, { email: name }] }).findOne({ password: password });
+        console.log(users);
+        if (users) {
             var data = {
-                user: user.name,
-                address: user.address,
-                privateKey: user.privateKey
+                user: users.name,
+                email: users.email,
+                bio: users.bio,
+                address: users.address,
+                privateKey: users.privateKey
             }
             return data;
         } else {
