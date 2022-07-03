@@ -1,7 +1,7 @@
 {
-    "name": "icicb-nft-marketplace",
+    "name": "CLJ-nft-marketplace",
     "version": "1.0.0",
-    "description": "This is Open NFT marketplace for ICICB chain",
+    "description": "This is Open NFT marketplace for CLJ chain",
     "main": "index.js",
     "scripts": {
         "server": "nodemon ./server.js",

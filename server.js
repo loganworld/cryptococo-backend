@@ -41,21 +41,25 @@ app.use("/api", router);
 blockchainHandle();
 
 app.use(express.static(__dirname + "/build"));
-app.get("/*", function (req, res) {
-    res.sendFile(__dirname + "/build/index.html", function (err) {
-        if (err) {
-            res.status(500).send(err);
-        }
-    });
-});
+// app.get("/*", function (req, res) {
+//     res.sendFile(__dirname + "/build/index.html", function (err) {
+//         if (err) {
+//             res.status(500).send(err);
+//         }
+//     });
+// });
 
 const startApolloServer = async (typeDefs, resolvers) => {
-    const server = new ApolloServer({ typeDefs, resolvers });
+    const server = new ApolloServer({
+        typeDefs, resolvers,
+        csrfPrevention: true,
+        cache: 'bounded',
+    });
 
     await server.start();
     server.applyMiddleware({ app, path: "/graphql" });
 
-    const PORT = config.port || 80;
+    const PORT = config.port || 5000;
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 };
 

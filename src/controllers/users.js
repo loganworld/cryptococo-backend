@@ -4,7 +4,7 @@ const UserSchema = require("../models/user");
 
 const UserController = {
     create: async (props) => {
-        const { address, name, email, password, publicKey, privateKey } = props;
+        const { address, name, email, password, privateKey } = props;
 
         var user = await UserSchema.findOne({
             $or: [{ name: name }, { email: email }],
@@ -17,7 +17,7 @@ const UserController = {
             name: name,
             email: email,
             password: password,
-            publicKey: publicKey,
+            address: address,
             privateKey: privateKey,
             image: ""
         });
@@ -76,7 +76,7 @@ const UserController = {
         if (users) {
             var data = {
                 user: users.name,
-                publicKey: users.publicKey,
+                address: users.address,
                 privateKey: users.privateKey
             }
             return data;

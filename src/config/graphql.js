@@ -73,11 +73,13 @@ const typeDefs = gql`
     }
 
     type Query {
-        getAllNFTs: [item]
+        getAllNFTs(address : String): [item]
+        getNFTs(address : String): [item]
         getCollectionNFTs: [NFTs]
+        getCollectionNFT(address : String): [NFTs]
         getUserInfo(account: String): User
         getUsersInfo: [User]
     }
-`;
+`;  
 
 module.exports = { typeDefs };

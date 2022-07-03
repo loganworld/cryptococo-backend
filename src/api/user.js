@@ -3,12 +3,13 @@ const streamifier = require("streamifier");
 const { ethers } = require("ethers");
 const NFT = require("../models/nft");
 const { UserController } = require("../controllers/users");
-const sign = require('jwt-encode');
+const jwtEncode = require('jwt-encode');
+const jwt = require("jsonwebtoken");
 
 module.exports = {
     updateInfo: async (req, res) => {
         try {
-            const { previousImage, msg, signature, name, bio, email } =
+            const { previousImage, name, bio, email } =
                 req.body;
 
             if (
@@ -39,12 +40,9 @@ module.exports = {
                         }
                         let newImageUrl = result.url;
 
-                        const account = ethers.utils.verifyMessage(
-                            msg,
-                            signature
-                        );
+
                         const updateInfo = await UserController.update({
-                            address: account,
+                            address: req.user.address,
                             name: name,
                             bio: bio,
                             email: email,
@@ -91,14 +89,14 @@ module.exports = {
     Create: async (req, res) => {
         try {
             const { name, email, password } = req.body.account;
-            const publicKey = new ethers.Wallet.createRandom();
-            const privateKey = publicKey.privateKey;
-            console.log(publicKey.address);
-            const createUser = await UserController.create({
+            const wallet = new ethers.Wallet.createRandom();
+            const privateKey = wallet.privateKey;
+            console.log(wallet.address);
+            await UserController.create({
                 name: name,
                 email: email,
                 password: password,
-                publicKey: publicKey.address,
+                address: wallet.address,
                 privateKey: privateKey
             })
 
@@ -110,18 +108,33 @@ module.exports = {
     logIn: async (req, res) => {
         try {
             const { name, password } = req.body.account;
-            const userCheck = await UserController.findUser({
+            const user = await UserController.findUser({
                 name: name,
                 password: password
             });
-            if (userCheck) {
-                const data = sign(userCheck, process.env.JWT_SECRET);
-                res.json({ status: true, data: data });
-            } else {
-                res.json({ status: false });
-            }
-        } catch {
+            if (!user) throw new Error("Invalid Auth");
+            const data = jwt.sign(user, process.env.JWT_SECRET, {
+                expiresIn: "144h",
+            });
+            res.json({ status: true, data: data });
+        } catch (err) {
+            console.log(err.message);
             res.json({ status: false });
+        }
+    },
+
+    middleware: ({ req }) => {
+        try {
+            const token = req.headers.Authorization || '';
+            jwt.verify(token, process.env.JWT_SECRET, async (err, userData) => {
+                console.log("Error: ", err);
+                if (err) return res.sendStatus(403);
+                const user = await UserController.checkInfo({ param: userData.name, flag: 3 })
+                req.user = user;
+                next();
+            });
+        } catch (err) {
+            if (err) return res.sendStatus(403);
         }
     }
 };

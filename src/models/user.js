@@ -20,7 +20,7 @@ const UserBasicSchema = new Schema({
     password: {
         type: String,
     },
-    publicKey: {
+    address: {
         type: String,
     },
     privateKey: {

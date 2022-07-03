@@ -66,8 +66,8 @@ const manageNFTs = {
                     const defaultData = new NFT({
                         address: addresses[i],
                         metadata: {
-                            name: "ICICB",
-                            description: "ICICB default NFT collection",
+                            name: "CLJ",
+                            description: "CLJ default NFT collection",
                             coverImage: "",
                             image: "",
                             external_url: "",
