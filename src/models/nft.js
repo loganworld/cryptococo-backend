@@ -83,7 +83,7 @@ const marketdata = new Schema({
 });
 
 const item = new Schema({
-    tokenID: { type: Number },
+    tokenID: { type: String },
     collectionAddress: String,
     likes: { type: Array },
     creator: String,

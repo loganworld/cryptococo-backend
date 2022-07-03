@@ -18,6 +18,8 @@ const handleEvent = async (props) => {
             let blockNumber = await provider.getBlockNumber();
             console.log(
                 "handle transactions : ",
+                contract.address,
+                event,
                 latestblocknumber,
                 blockNumber
             );

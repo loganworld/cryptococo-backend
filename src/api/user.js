@@ -41,25 +41,26 @@ module.exports = {
                         let newImageUrl = result.url;
 
 
-                        const updateInfo = await UserController.update({
+                        await UserController.update({
                             address: req.user.address,
                             name: name,
                             bio: bio,
                             email: email,
                             image: newImageUrl,
                         });
+                        const user = await UserController.checkInfo({ param: req.user.address, flag: 1 })
 
-                        if (updateInfo) {
-                            res.json({
-                                success: true,
-                                msg: "user info updated",
-                            });
-                        } else {
-                            res.json({
-                                success: false,
-                                msg: "database error",
-                            });
+                        var data = {
+                            name: user.name,
+                            email: user.email,
+                            bio: user.bio,
+                            address: user.address,
+                            privateKey: user.privateKey
                         }
+                        const token = jwt.sign(data, process.env.JWT_SECRET, {
+                            expiresIn: "144h",
+                        });
+                        res.json({ status: true, data: token });
                     }
                 );
 
@@ -123,9 +124,9 @@ module.exports = {
         }
     },
 
-    middleware: ({ req }) => {
+    middleware: (req, res, next) => {
         try {
-            const token = req.headers.Authorization || '';
+            const token = req.headers.authorization || '';
             jwt.verify(token, process.env.JWT_SECRET, async (err, userData) => {
                 console.log("Error: ", err);
                 if (err) return res.sendStatus(403);

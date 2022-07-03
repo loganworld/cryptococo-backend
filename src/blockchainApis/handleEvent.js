@@ -64,23 +64,20 @@ const handleTransation = async () => {
                         const tokenUri = await contract.tokenURI(
                             txData.tokenId
                         );
+
+                        console.log(process.env.IPFS_BASEURL + tokenUri);
                         const metadata = await axios.get(
                             process.env.IPFS_BASEURL + tokenUri
                         )
 
-                        manageNFTs
+                        await manageNFTs
                             .createNFT({
                                 tokenId: txData.tokenId,
                                 contractAddress: id,
                                 ownerAddress: txData.to,
                                 metadata: metadata.data,
                             })
-                            .then((res) => {
-                                if (res) console.log("detect new NFT");
-                            })
-                            .catch((err) => {
-                                console.log(err);
-                            });
+                        console.log("detect new NFT");
                     } else if (txData.from === marketAddress) {
                         manageNFTs
                             .updateOwner({
