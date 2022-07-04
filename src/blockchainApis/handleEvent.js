@@ -24,7 +24,7 @@ const handleTransation = async () => {
                         price: fromBigNum(tx.args.priceInWei, 18),
                         expireAt: fromBigNum(tx.args.expiresAt, 0),
                     };
-
+                    console.log("OrderCreated ", txData);
                     const marketAddress = await manageNFTs.getAddresses({
                         id: 2,
                     });
@@ -55,6 +55,7 @@ const handleTransation = async () => {
                         tokenId: fromBigNum(tx.args.tokenId, 0),
                     };
 
+                    console.log("Transfer ", txData);
                     const marketAddress = await manageNFTs.getAddresses({
                         id: 2,
                     });
@@ -64,25 +65,22 @@ const handleTransation = async () => {
                         const tokenUri = await contract.tokenURI(
                             txData.tokenId
                         );
+
+                        console.log(process.env.IPFS_BASEURL + tokenUri);
                         const metadata = await axios.get(
                             process.env.IPFS_BASEURL + tokenUri
                         )
 
-                        manageNFTs
+                        await manageNFTs
                             .createNFT({
                                 tokenId: txData.tokenId,
                                 contractAddress: id,
                                 ownerAddress: txData.to,
                                 metadata: metadata.data,
                             })
-                            .then((res) => {
-                                if (res) console.log("detect new NFT");
-                            })
-                            .catch((err) => {
-                                console.log(err);
-                            });
-                    } else if (txData.from === marketAddress) {
-                        manageNFTs
+                        console.log("detect new NFT");
+                    } else {
+                        await manageNFTs
                             .updateOwner({
                                 contractAddress: id,
                                 tokenId: txData.tokenId,
@@ -94,6 +92,19 @@ const handleTransation = async () => {
                             .catch((err) => {
                                 console.log(err);
                             });
+                    }
+                    if (txData.to == marketAddress) {
+                        //market data update
+                        let marketdata = await marketplaceContract.orderByAssetId(id, txData.tokenId);
+                        manageOrder
+                            .createOrder({
+                                assetOwner: marketdata.seller,
+                                collectionAddress: marketdata.nftAddress,
+                                assetId: txData.tokenId,
+                                price: marketdata.price,
+                                expireAt: marketdata.expireAt,
+                                marketAddress: marketAddress,
+                            })
                     }
                 } else if (tx.event === "BidCreated") {
                     let txData = {

@@ -31,7 +31,6 @@ const resolvers = {
                         nfts.push(item.items[i]);
                     }
                 });
-
                 return nfts;
             } catch (err) {
                 console.log(err);

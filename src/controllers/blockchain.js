@@ -203,11 +203,9 @@ const manageOrder = {
                 collectionAddress,
                 assetId,
                 price,
-                expireAt,
-                marketAddress,
+                expireAt
             } = props;
 
-            let key = "items." + assetId + ".owner";
             let key1 = "items." + assetId + ".marketdata.price";
             let key2 = "items." + assetId + ".marketdata.owner";
             let key3 = "items." + assetId + ".marketdata.endTime";
@@ -215,7 +213,6 @@ const manageOrder = {
                 { address: collectionAddress },
                 {
                     $set: {
-                        [key]: marketAddress,
                         [key1]: price,
                         [key2]: assetOwner,
                         [key3]: expireAt,

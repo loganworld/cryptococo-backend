@@ -37,7 +37,7 @@ const typeDefs = gql`
         endTime: String
         bidder: String
         bidPrice: String
-        prices: [Int]
+        prices: [String]
         owners: [String]
         bidders: [String]
         bidPrices: [String]
@@ -45,7 +45,7 @@ const typeDefs = gql`
     }
 
     type item {
-        tokenID: Int
+        tokenID: String
         collectionAddress: String
         likes: [String]
         creator: String
@@ -73,7 +73,7 @@ const typeDefs = gql`
     }
 
     type Query {
-        getAllNFTs(address : String): [item]
+        getAllNFTs: [item]
         getNFTs(address : String): [item]
         getCollectionNFTs: [NFTs]
         getCollectionNFT(address : String): [NFTs]

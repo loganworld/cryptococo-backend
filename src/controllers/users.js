@@ -76,7 +76,7 @@ const UserController = {
         console.log(users);
         if (users) {
             var data = {
-                user: users.name,
+                name: users.name,
                 email: users.email,
                 bio: users.bio,
                 address: users.address,
