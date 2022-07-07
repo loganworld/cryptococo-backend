@@ -59,6 +59,7 @@ const metadata = new Schema({
 });
 
 const marketdata = new Schema({
+    acceptedToken: String,
     price: String,
     owner: String,
     startTime: String,
@@ -68,6 +69,9 @@ const marketdata = new Schema({
     prices: {
         type: Array,
     },
+    tokens: {
+        type: Array,
+    },
     owners: {
         type: Array,
     },
@@ -75,6 +79,9 @@ const marketdata = new Schema({
         type: Array,
     },
     bidPrices: {
+        type: Array,
+    },
+    bidTokens: {
         type: Array,
     },
     bidTime: {
