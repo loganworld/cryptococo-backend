@@ -32,15 +32,18 @@ const typeDefs = gql`
 
     type marketdata {
         price: String
+        acceptedToken: String
         owner: String
         startTime: String
         endTime: String
         bidder: String
         bidPrice: String
         prices: [String]
+        tokens: [String]
         owners: [String]
         bidders: [String]
         bidPrices: [String]
+        bidTokens: [String]
         bidTime: [String]
     }
 

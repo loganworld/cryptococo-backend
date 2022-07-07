@@ -37,7 +37,7 @@ function toBigNum(value, d) {
  * @param {Number} value - data that need to be change
  * @param {Number} d - decimals
  */
-function fromBigNum(value, d) {
+function fromBigNum(value, d = 18) {
     return ethers.utils.formatUnits(value, d);
 }
 

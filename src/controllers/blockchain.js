@@ -66,10 +66,10 @@ const manageNFTs = {
                     const defaultData = new NFT({
                         address: addresses[i],
                         metadata: {
-                            name: "CLJ",
-                            description: "CLJ default NFT collection",
-                            coverImage: "",
-                            image: "",
+                            name: "CIJ",
+                            description: "CIJ default NFT collection",
+                            coverImage: "https://res.cloudinary.com/galaxy-digital/image/upload/v1653351729/marketplace/Background_8_egry4i.jpg",
+                            image: "http://res.cloudinary.com/galaxy-digital/image/upload/v1656898156/marketplace/t9fi7rm4rnqqpbqdr5hk.png",
                             external_url: "",
                             fee: "0.2",
                             fee_recipent: process.env.OWNER,
@@ -203,19 +203,22 @@ const manageOrder = {
                 collectionAddress,
                 assetId,
                 price,
-                expireAt
+                acceptedToken,
+                expiresAt
             } = props;
 
             let key1 = "items." + assetId + ".marketdata.price";
-            let key2 = "items." + assetId + ".marketdata.owner";
-            let key3 = "items." + assetId + ".marketdata.endTime";
+            let key2 = "items." + assetId + ".marketdata.acceptedToken";
+            let key3 = "items." + assetId + ".marketdata.owner";
+            let key4 = "items." + assetId + ".marketdata.endTime";
             const result = await NFT.updateOne(
                 { address: collectionAddress },
                 {
                     $set: {
                         [key1]: price,
-                        [key2]: assetOwner,
-                        [key3]: expireAt,
+                        [key2]: acceptedToken,
+                        [key3]: assetOwner,
+                        [key4]: expiresAt,
                     },
                 }
             );
@@ -230,7 +233,7 @@ const manageOrder = {
         }
     },
     placeBid: async (props) => {
-        const { collectionAddress, assetId, bidder, price, expireAt } = props;
+        const { collectionAddress, assetId, bidder, price, expiresAt } = props;
 
         let key = "items." + assetId + ".marketdata.bidder";
         let key1 = "items." + assetId + ".marketdata.bidPrice";
@@ -248,7 +251,7 @@ const manageOrder = {
                 $push: {
                     [key2]: bidder,
                     [key3]: price,
-                    [key4]: expireAt,
+                    [key4]: expiresAt,
                 },
             }
         );

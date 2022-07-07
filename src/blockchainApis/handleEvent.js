@@ -15,40 +15,41 @@ const handleTransation = async () => {
     try {
         const handler = async (tx, id) => {
             try {
-                if (tx.event === "OrderCreated") {
-                    let txData = {
-                        orderId: tx.args.id,
-                        assetOwner: tx.args.seller,
-                        collectionAddress: tx.args.nftAddress,
-                        assetId: fromBigNum(tx.args.assetId, 0),
-                        price: fromBigNum(tx.args.priceInWei, 18),
-                        expireAt: fromBigNum(tx.args.expiresAt, 0),
-                    };
-                    console.log("OrderCreated ", txData);
-                    const marketAddress = await manageNFTs.getAddresses({
-                        id: 2,
-                    });
+                // if (tx.event === "OrderCreated") {
+                //     let txData = {
+                //         orderId: tx.args.id,
+                //         assetOwner: tx.args.seller,
+                //         collectionAddress: tx.args.nftAddress,
+                //         assetId: fromBigNum(tx.args.assetId, 0),
+                //         price: fromBigNum(tx.args.priceInWei, 18),
+                //         expireAt: fromBigNum(tx.args.expiresAt, 0),
+                //     };
+                //     console.log("OrderCreated ", txData);
+                //     const marketAddress = await manageNFTs.getAddresses({
+                //         id: 2,
+                //     });
 
-                    manageOrder
-                        .createOrder({
-                            assetOwner: txData.assetOwner,
-                            collectionAddress: txData.collectionAddress,
-                            assetId: txData.assetId,
-                            price: txData.price,
-                            expireAt: txData.expireAt,
-                            marketAddress: marketAddress,
-                        })
-                        .then((res) => {
-                            if (res)
-                                console.log(
-                                    "new detect sale: ",
-                                    txData.orderId
-                                );
-                        })
-                        .catch((err) => {
-                            console.log(err);
-                        });
-                } else if (tx.event === "Transfer") {
+                //     manageOrder
+                //         .createOrder({
+                //             assetOwner: txData.assetOwner,
+                //             collectionAddress: txData.collectionAddress,
+                //             assetId: txData.assetId,
+                //             price: txData.price,
+                //             expireAt: txData.expireAt,
+                //             marketAddress: marketAddress,
+                //         })
+                //         .then((res) => {
+                //             if (res)
+                //                 console.log(
+                //                     "new detect sale: ",
+                //                     txData.orderId
+                //                 );
+                //         })
+                //         .catch((err) => {
+                //             console.log(err);
+                //         });
+                // } else
+                if (tx.event === "Transfer") {
                     let txData = {
                         from: tx.args.from,
                         to: tx.args.to,
@@ -86,25 +87,22 @@ const handleTransation = async () => {
                                 tokenId: txData.tokenId,
                                 newAddress: txData.to,
                             })
-                            .then((res) => {
-                                if (res) console.log("detect NFT update");
-                            })
-                            .catch((err) => {
-                                console.log(err);
-                            });
+                        console.log("detect NFT update - transfer");
                     }
                     if (txData.to == marketAddress) {
                         //market data update
                         let marketdata = await marketplaceContract.orderByAssetId(id, txData.tokenId);
-                        manageOrder
+                        console.log("detect NFT update - market list", id, txData.tokenId, marketdata, marketdata.price);
+                        await manageOrder
                             .createOrder({
                                 assetOwner: marketdata.seller,
                                 collectionAddress: marketdata.nftAddress,
                                 assetId: txData.tokenId,
-                                price: marketdata.price,
-                                expireAt: marketdata.expireAt,
+                                price: fromBigNum(marketdata.price),
+                                acceptedToken: marketdata.acceptedToken,
+                                expiresAt: marketdata.expiresAt,
                                 marketAddress: marketAddress,
-                            })
+                            });
                     }
                 } else if (tx.event === "BidCreated") {
                     let txData = {
@@ -112,7 +110,7 @@ const handleTransation = async () => {
                         assetId: fromBigNum(tx.args.assetId, 0),
                         bidder: tx.args.bidder,
                         price: fromBigNum(tx.args.priceInWei, 18),
-                        expireAt: fromBigNum(tx.args.expiresAt, 0),
+                        expiresAt: fromBigNum(tx.args.expiresAt, 0),
                     };
 
                     manageOrder
@@ -121,7 +119,7 @@ const handleTransation = async () => {
                             assetId: txData.assetId,
                             bidder: txData.bidder,
                             price: txData.price,
-                            expireAt: txData.expireAt,
+                            expiresAt: txData.expiresAt,
                         })
                         .then((res) => {
                             if (res) console.log("successfully bid");
@@ -140,15 +138,15 @@ const handleTransation = async () => {
             const addresses = await manageNFTs.getAddresses({ id: 1 });
             const marketplace = await manageNFTs.getAddresses({ id: 2 });
 
-            handleEvent({
-                id: marketplace,
-                provider: provider,
-                contract: marketplaceContract,
-                event: "OrderCreated",
-                times: 15,
-                handler: handler,
-                BlockNumController: BlockNumController,
-            });
+            // handleEvent({
+            //     id: marketplace,
+            //     provider: provider,
+            //     contract: marketplaceContract,
+            //     event: "OrderCreated",
+            //     times: 15,
+            //     handler: handler,
+            //     BlockNumController: BlockNumController,
+            // });
 
             handleEvent({
                 id: marketplace,
