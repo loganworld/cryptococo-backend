@@ -6,7 +6,7 @@ const supportChainId = process.env.CHAINID;
 const RPCS = {
     // 1: "http://13.59.118.124/eth",
     // 250: "https://rpc.ftm.tools/",
-    4002: "https://ftm-test.babylonswap.finance",
+    4002: "https://rpc.testnet.fantom.network",
     // 1337: "http://localhost:7545",
     // 31337: "http://localhost:8545/",
 };
