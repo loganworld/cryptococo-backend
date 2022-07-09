@@ -1,6 +1,6 @@
 require("dotenv").config();
 const ipfsAPI = require("ipfs-api");
-const ipfs = ipfsAPI("localhost", "5001", { protocol: "http" });
+const ipfs = ipfsAPI("ipfs-api.babylonswap.finance", "443", { protocol: "https" });
 const { nftControl } = require("../controllers/nft");
 const { manageNFTs } = require("../controllers/blockchain");
 const bs58 = require("bs58");
@@ -11,46 +11,53 @@ module.exports = {
         try {
             const { name, extlink, desc, attribute } = req.body;
             ipfs.files.add(req.files.image.data, function (err, file) {
-                if (err || file === undefined) {
-                    throw new Error("ipfs error");
-                }
-                let imageUrl = file[0].hash;
-
-                let attr = [];
-                let attrJSON = JSON.parse(attribute);
-                for (let x in attrJSON) {
-                    if (
-                        attrJSON[x].key.trim() !== "" &&
-                        attrJSON[x].value.trim() !== ""
-                    ) {
-                        attr.push(attrJSON[x]);
-                    } else {
-                        break;
-                    }
-                }
-
-                const metadata = {
-                    image: process.env.IPFS_BASEURL + imageUrl,
-                    external_url: extlink,
-                    description: desc,
-                    name: name,
-                    attributes: attr,
-                    background_color: "white",
-                    animation_url: "",
-                    youtube_url: "",
-                };
-
-                let bufferfile = Buffer.from(JSON.stringify(metadata));
-                ipfs.files.add(bufferfile, function (err, file) {
+                try {
                     if (err || file === undefined) {
                         throw new Error("ipfs error");
                     }
-                    let nftUrl = file[0].hash;
-                    res.json({
-                        success: true,
-                        url: nftUrl,
+                    let imageUrl = file[0].hash;
+
+                    let attr = [];
+                    let attrJSON = JSON.parse(attribute);
+                    for (let x in attrJSON) {
+                        if (
+                            attrJSON[x].key.trim() !== "" &&
+                            attrJSON[x].value.trim() !== ""
+                        ) {
+                            attr.push(attrJSON[x]);
+                        } else {
+                            break;
+                        }
+                    }
+
+                    const metadata = {
+                        image: process.env.IPFS_BASEURL + imageUrl,
+                        external_url: extlink,
+                        description: desc,
+                        name: name,
+                        attributes: attr,
+                        background_color: "white",
+                        animation_url: "",
+                        youtube_url: "",
+                    };
+
+                    let bufferfile = Buffer.from(JSON.stringify(metadata));
+                    ipfs.files.add(bufferfile, function (err, file) {
+                        if (err || file === undefined) {
+                            throw new Error("ipfs error");
+                        }
+                        let nftUrl = file[0].hash;
+                        res.json({
+                            success: true,
+                            url: nftUrl,
+                        });
                     });
-                });
+                } catch (err) {
+                    console.log(err.message);
+                    return res.json({
+                        success: false,
+                    });
+                }
             });
         } catch (err) {
             console.log(err.message);
@@ -159,6 +166,6 @@ module.exports = {
         }
     },
     LazySale: async (req, res) => {
-        
+
     },
 };
