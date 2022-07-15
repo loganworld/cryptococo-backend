@@ -39,6 +39,15 @@ const nftControl = {
 
         return result;
     },
+    findNFT: async (props) => {
+        const { collectionAddress, id } = props;
+
+        const item = await NFT.findOne({
+            tokenID: id,
+        });
+
+        return item;
+    },
 };
 
 module.exports = { nftControl };

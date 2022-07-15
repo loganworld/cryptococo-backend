@@ -8,7 +8,8 @@ cloudinary.config(config.cloudinary);
 
 module.exports = (router) => {
     // Nft manage
-    router.post("/lazy-mint", NFT.LazyMint);
+    router.post("/lazy-mint", User.middleware, NFT.LazyMint);
+    router.post("/lazy-onsale", User.middleware, NFT.LazyOnSale);
     router.post("/user-update", User.middleware, User.updateInfo);
     router.post("/mint-nft", NFT.MintNFT);
     router.post("/nft-like", NFT.LikeNFT);

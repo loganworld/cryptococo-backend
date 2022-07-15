@@ -1,10 +1,12 @@
 require("dotenv").config();
 const ipfsAPI = require("ipfs-api");
-const ipfs = ipfsAPI("localhost", "5001", { protocol: "http" });
+const ipfs = ipfsAPI(process.env.IPFS_HOST, process.env.IPFS_PORT, {
+    protocol: process.env.IPFS_OPT,
+});
 const { nftControl } = require("../controllers/nft");
 const { manageNFTs } = require("../controllers/blockchain");
 const bs58 = require("bs58");
-const addresses = "../contracts/contracts/addresses.json";
+const addresses = require("../contracts/contracts/addresses.json");
 
 module.exports = {
     MintNFT: async (req, res) => {
@@ -133,7 +135,7 @@ module.exports = {
 
                     let result = await manageNFTs.createNFT({
                         contractAddress: addresses.StoreFront,
-                        ownerAddress,
+                        ownerAddress: req.user.address,
                         metadata: metadata,
                         tokenId: tokenId,
                     });
@@ -158,7 +160,23 @@ module.exports = {
             });
         }
     },
-    LazySale: async (req, res) => {
-        
+    LazyOnSale: async (req, res) => {
+        try {
+            const { nftAddress, assetId, currency, price, expiresAt } =
+                req.body;
+
+            const correctNFT = await nftControl.findNFT({
+                collectionAddress: nftAddress,
+                id: assetId,
+            });
+
+            res.json({ result: correctNFT });
+        } catch (err) {
+            console.log(err.message);
+            return res.json({
+                success: false,
+                msg: "server error",
+            });
+        }
     },
 };

@@ -68,8 +68,9 @@ const manageNFTs = {
                         metadata: {
                             name: "CIJ",
                             description: "CIJ default NFT collection",
-                            coverImage: "https://res.cloudinary.com/galaxy-digital/image/upload/v1653351729/marketplace/Background_8_egry4i.jpg",
-                            image: "http://res.cloudinary.com/galaxy-digital/image/upload/v1656898156/marketplace/t9fi7rm4rnqqpbqdr5hk.png",
+                            coverImage:
+                                "https://res.cloudinary.com/galaxy-digital/image/upload/v1653351729/marketplace/Background_8_egry4i.jpg",
+                            image: "https://res.cloudinary.com/galaxy-digital/image/upload/v1652371143/icicbmetaverse/jatehwm95eitsdj87hhb.png",
                             external_url: "",
                             fee: "0.2",
                             fee_recipent: process.env.OWNER,
