@@ -14,7 +14,6 @@ module.exports = (router) => {
     router.post("/nft-like", NFT.LikeNFT);
 
     // Auth manage
-    router.post("/test", User.test);
     router.post("/user-create", User.Create);
     router.post("/user-login", User.logIn);
     router.post("/user-update", User.middleware, User.updateInfo);
