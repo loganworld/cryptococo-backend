@@ -7,6 +7,7 @@ const { nftControl } = require("../controllers/nft");
 const { manageNFTs } = require("../controllers/blockchain");
 const bs58 = require("bs58");
 const addresses = require("../contracts/contracts/addresses.json");
+const { sign, getSigner } = require("../utils/utils");
 
 module.exports = {
     MintNFT: async (req, res) => {
@@ -170,9 +171,28 @@ module.exports = {
                 id: assetId,
             });
 
-            res.json({ result: correctNFT });
+            if (correctNFT.items[0].owner !== req.user.address) {
+                throw new Error("nft owner invalid");
+            }
+
+            const signer = await getSigner({ privateKey: req.user.privateKey });
+
+            var onSaleData = {
+                tokenId: nftAddress,
+                owner: req.user.address,
+                market: addresses.Marketplace,
+                _priceInWei: price,
+                _expiresAt: expiresAt,
+                signer: signer,
+            };
+            var signature = await sign(onSaleData);
+
+            res.json({
+                success: true,
+                result: signature,
+            });
         } catch (err) {
-            console.log(err.message);
+            console.log(err);
             return res.json({
                 success: false,
                 msg: "server error",

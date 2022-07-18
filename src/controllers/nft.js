@@ -43,7 +43,10 @@ const nftControl = {
         const { collectionAddress, id } = props;
 
         const item = await NFT.findOne({
-            tokenID: id,
+            $and: [
+                { address: collectionAddress },
+                { items: { $elemMatch: { tokenID: id } } },
+            ],
         });
 
         return item;
