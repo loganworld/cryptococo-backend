@@ -2,6 +2,7 @@ require("dotenv").config();
 const colors = require("colors");
 const NFT = require("../models/nft");
 const ADDRESSES = require("../models/addresses");
+const fileAddresses = require("../contracts/contracts/addresses.json");
 
 const manageNFTs = {
     createNFT: async (props) => {
@@ -128,38 +129,95 @@ const manageNFTs = {
         try {
             const { contractAddress, tokenId, newAddress } = props;
 
+            var result = null;
             const data = await NFT.find({ address: contractAddress });
-            let key = "items." + tokenId + ".owner";
-            let price = "items." + tokenId + ".marketdata.price";
-            let preowner = "items." + tokenId + ".marketdata.owner";
-            let time = "items." + tokenId + ".marketdata.endTime";
-            let bidder = "items." + tokenId + ".marketdata.bidder";
-            let bidPrice = "items." + tokenId + ".marketdata.bidPrice";
-            let bidders = "items." + tokenId + ".marketdata.bidders";
-            let bidPrices = "items." + tokenId + ".marketdata.bidPrices";
 
-            let owners = "items." + tokenId + ".marketdata.owners";
-            let prices = "items." + tokenId + ".marketdata.prices";
+            if (contractAddress !== fileAddresses.StoreFront) {
+                let key = "items." + tokenId + ".owner";
+                let price = "items." + tokenId + ".marketdata.price";
+                let preowner = "items." + tokenId + ".marketdata.owner";
+                let time = "items." + tokenId + ".marketdata.endTime";
+                let bidder = "items." + tokenId + ".marketdata.bidder";
+                let bidPrice = "items." + tokenId + ".marketdata.bidPrice";
+                let bidders = "items." + tokenId + ".marketdata.bidders";
+                let bidPrices = "items." + tokenId + ".marketdata.bidPrices";
 
-            const result = await NFT.updateOne(
-                { address: contractAddress },
-                {
-                    $set: {
-                        [key]: newAddress,
-                        [price]: "",
-                        [preowner]: "",
-                        [time]: "",
-                        [bidder]: "",
-                        [bidPrice]: "",
-                        [bidders]: [],
-                        [bidPrices]: [],
+                let owners = "items." + tokenId + ".marketdata.owners";
+                let prices = "items." + tokenId + ".marketdata.prices";
+
+                result = await NFT.updateOne(
+                    { address: contractAddress },
+                    {
+                        $set: {
+                            [key]: newAddress,
+                            [price]: "",
+                            [preowner]: "",
+                            [time]: "",
+                            [bidder]: "",
+                            [bidPrice]: "",
+                            [bidders]: [],
+                            [bidPrices]: [],
+                        },
+                        $push: {
+                            [owners]: data[0].items[tokenId].marketdata.owner,
+                            [prices]: data[0].items[tokenId].marketdata.price,
+                        },
+                    }
+                );
+            } else {
+                let nftIndex = await NFT.aggregate([
+                    { $match: { address: contractAddress } },
+                    {
+                        $project: {
+                            index: {
+                                $indexOfArray: ["$items.tokenID", tokenId._hex],
+                            },
+                        },
                     },
-                    $push: {
-                        [owners]: data[0].items[tokenId].marketdata.owner,
-                        [prices]: data[0].items[tokenId].marketdata.price,
-                    },
-                }
-            );
+                ]);
+                let key = "items." + nftIndex[0].index + ".owner";
+                let price = "items." + nftIndex[0].index + ".marketdata.price";
+                let preowner =
+                    "items." + nftIndex[0].index + ".marketdata.owner";
+                let time = "items." + nftIndex[0].index + ".marketdata.endTime";
+                let bidder =
+                    "items." + nftIndex[0].index + ".marketdata.bidder";
+                let bidPrice =
+                    "items." + nftIndex[0].index + ".marketdata.bidPrice";
+                let bidders =
+                    "items." + nftIndex[0].index + ".marketdata.bidders";
+                let bidPrices =
+                    "items." + nftIndex[0].index + ".marketdata.bidPrices";
+
+                let owners =
+                    "items." + nftIndex[0].index + ".marketdata.owners";
+                let prices =
+                    "items." + nftIndex[0].index + ".marketdata.prices";
+
+                result = await NFT.updateOne(
+                    { address: contractAddress },
+                    {
+                        $set: {
+                            [key]: newAddress,
+                            [price]: "",
+                            [preowner]: "",
+                            [time]: "",
+                            [bidder]: "",
+                            [bidPrice]: "",
+                            [bidders]: [],
+                            [bidPrices]: [],
+                        },
+                        $push: {
+                            [owners]:
+                                data[0].items[nftIndex[0].index].marketdata
+                                    .owner,
+                            [prices]:
+                                data[0].items[nftIndex[0].index].marketdata
+                                    .price,
+                        },
+                    }
+                );
+            }
 
             if (!result) {
                 throw new Error("Database Error");
@@ -205,24 +263,56 @@ const manageOrder = {
                 assetId,
                 price,
                 acceptedToken,
-                expiresAt
+                expiresAt,
             } = props;
 
-            let key1 = "items." + assetId + ".marketdata.price";
-            let key2 = "items." + assetId + ".marketdata.acceptedToken";
-            let key3 = "items." + assetId + ".marketdata.owner";
-            let key4 = "items." + assetId + ".marketdata.endTime";
-            const result = await NFT.updateOne(
-                { address: collectionAddress },
-                {
-                    $set: {
-                        [key1]: price,
-                        [key2]: acceptedToken,
-                        [key3]: assetOwner,
-                        [key4]: expiresAt,
+            var result = null;
+
+            if (collectionAddress !== fileAddresses.StoreFront) {
+                let key1 = "items." + assetId + ".marketdata.price";
+                let key2 = "items." + assetId + ".marketdata.acceptedToken";
+                let key3 = "items." + assetId + ".marketdata.owner";
+                let key4 = "items." + assetId + ".marketdata.endTime";
+                result = await NFT.updateOne(
+                    { address: collectionAddress },
+                    {
+                        $set: {
+                            [key1]: price,
+                            [key2]: acceptedToken,
+                            [key3]: assetOwner,
+                            [key4]: expiresAt,
+                        },
+                    }
+                );
+            } else {
+                let nftIndex = await NFT.aggregate([
+                    { $match: { address: collectionAddress } },
+                    {
+                        $project: {
+                            index: {
+                                $indexOfArray: ["$items.tokenID", assetId._hex],
+                            },
+                        },
                     },
-                }
-            );
+                ]);
+
+                let key1 = "items." + nftIndex[0].index + ".marketdata.price";
+                let key2 =
+                    "items." + nftIndex[0].index + ".marketdata.acceptedToken";
+                let key3 = "items." + nftIndex[0].index + ".marketdata.owner";
+                let key4 = "items." + nftIndex[0].index + ".marketdata.endTime";
+                result = await NFT.updateOne(
+                    { address: collectionAddress },
+                    {
+                        $set: {
+                            [key1]: price,
+                            [key2]: acceptedToken,
+                            [key3]: assetOwner,
+                            [key4]: expiresAt,
+                        },
+                    }
+                );
+            }
 
             if (!result) {
                 throw new Error("Database Error");

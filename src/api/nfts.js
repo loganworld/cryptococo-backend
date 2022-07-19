@@ -8,6 +8,9 @@ const { manageNFTs } = require("../controllers/blockchain");
 const bs58 = require("bs58");
 const addresses = require("../contracts/contracts/addresses.json");
 const { sign, getSigner } = require("../utils/utils");
+const { toBigNum } = require("../utils/utils");
+
+const NFTModel = require("../models/nft");
 
 module.exports = {
     MintNFT: async (req, res) => {
@@ -163,8 +166,7 @@ module.exports = {
     },
     LazyOnSale: async (req, res) => {
         try {
-            const { nftAddress, assetId, currency, price, expiresAt } =
-                req.body;
+            const { nftAddress, assetId, price, expiresAt } = req.body;
 
             const correctNFT = await nftControl.findNFT({
                 collectionAddress: nftAddress,
@@ -178,11 +180,11 @@ module.exports = {
             const signer = await getSigner({ privateKey: req.user.privateKey });
 
             var onSaleData = {
-                tokenId: nftAddress,
+                tokenId: assetId,
                 owner: req.user.address,
                 market: addresses.Marketplace,
-                _priceInWei: price,
-                _expiresAt: expiresAt,
+                _priceInWei: toBigNum(price),
+                _expiresAt: toBigNum(expiresAt, 0),
                 signer: signer,
             };
             var signature = await sign(onSaleData);
@@ -197,6 +199,30 @@ module.exports = {
                 success: false,
                 msg: "server error",
             });
+        }
+    },
+    test: async (req, res) => {
+        const { contractAddress, tokenId } = req.body;
+
+        try {
+            var result = await NFTModel.aggregate([
+                { $match: { address: contractAddress } },
+                {
+                    $project: {
+                        index: {
+                            $indexOfArray: ["$items.tokenID", tokenId],
+                        },
+                    },
+                },
+            ]);
+
+            console.log(result);
+
+            res.json({
+                result: result,
+            });
+        } catch (err) {
+            console.log(err);
         }
     },
 };

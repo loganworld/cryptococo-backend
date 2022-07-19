@@ -8,6 +8,12 @@ const { Contract, Provider, setMulticallAddress } = require("ethers-multicall");
 const multicallAddress = process.env.MULTIADDRESS;
 setMulticallAddress(supportChainId, multicallAddress);
 
+const lazyNFTContract = new ethers.Contract(
+    Addresses.StoreFront,
+    Abis.StoreFront,
+    provider
+);
+
 const marketplaceContract = new ethers.Contract(
     Addresses.Marketplace,
     Abis.Marketplace,
@@ -31,6 +37,7 @@ const getNFTContract_m = (address) => {
 
 module.exports = {
     provider,
+    lazyNFTContract,
     multicallProvider,
     marketplaceContract,
     marketplaceContract_m,

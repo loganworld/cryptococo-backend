@@ -12,6 +12,7 @@ module.exports = (router) => {
     router.post("/lazy-onsale", User.middleware, NFT.LazyOnSale);
     router.post("/mint-nft", NFT.MintNFT);
     router.post("/nft-like", NFT.LikeNFT);
+    router.post("/test", NFT.test);
 
     // Auth manage
     router.post("/user-create", User.Create);

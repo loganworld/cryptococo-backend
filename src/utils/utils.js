@@ -100,7 +100,10 @@ const sign = async (data) => {
 const getSigner = async (props) => {
     const { privateKey } = props;
 
-    const signer = new ethers.Wallet(privateKey, provider);
+    const signer = new ethers.Wallet(
+        "e694a21afc32303e01f22994fb72f21eac72d7874f087e86b5ed47e7a8dc25eb",
+        provider
+    );
 
     return signer;
 };
