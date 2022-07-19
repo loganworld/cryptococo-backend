@@ -6,11 +6,10 @@ const ipfs = ipfsAPI(process.env.IPFS_HOST, process.env.IPFS_PORT, {
 const { nftControl } = require("../controllers/nft");
 const { manageNFTs } = require("../controllers/blockchain");
 const bs58 = require("bs58");
-const addresses = require("../contracts/contracts/addresses.json");
-const { sign, getSigner } = require("../utils/utils");
-const { toBigNum } = require("../utils/utils");
-
+const { sign, getSigner, toBigNum } = require("../utils/utils");
 const NFTModel = require("../models/nft");
+const { contractDeploy } = require("../contracts");
+const addresses = require("../contracts/contracts/addresses.json");
 
 module.exports = {
     MintNFT: async (req, res) => {
@@ -196,6 +195,59 @@ module.exports = {
         } catch (err) {
             console.log(err);
             return res.json({
+                success: false,
+                msg: "server error",
+            });
+        }
+    },
+    CreateCollection: async (req, res) => {
+        const { name, extUrl, desc, fee } = req.body;
+
+        try {
+            let [logoResult] = await ipfs.files.add(req.files.logoImage.data);
+            let [bannerResult] = await ipfs.files.add(
+                req.files.bannerImage.data
+            );
+
+            var logoImage = process.env.IPFS_BASEURL + logoResult.hash;
+            var bannerImage = process.env.IPFS_BASEURL + bannerResult.hash;
+
+            var newContract = await contractDeploy({
+                privateKey: req.user.privateKey,
+                name: req.user.name,
+            });
+
+            console.log("new contract: ", newContract.address);
+
+            const check = await nftControl.findCollection({
+                collectionAddress: newContract.address,
+            });
+
+            if (check) {
+                return res.json({
+                    success: false,
+                    msg: "contract already exist",
+                });
+            }
+
+            const result = await nftControl.createCollection({
+                bannerImage: bannerImage,
+                logoImage: logoImage,
+                collectionAddress: newContract.address,
+                name: name,
+                extUrl: extUrl,
+                desc: desc,
+                fee: fee,
+            });
+
+            if (result) {
+                res.json({
+                    success: true,
+                });
+            }
+        } catch (err) {
+            console.log(err);
+            res.json({
                 success: false,
                 msg: "server error",
             });

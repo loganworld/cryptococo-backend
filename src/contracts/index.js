@@ -1,5 +1,6 @@
 require("dotenv").config();
 const { ethers } = require("ethers");
+const Bytecode = require("./contracts/bytecode.json");
 const Abis = require("./contracts/abis.json");
 const Addresses = require("./contracts/addresses.json");
 const { provider, supportChainId } = require("./providers");
@@ -35,6 +36,17 @@ const getNFTContract_m = (address) => {
     return new Contract(address, Abis.NFT, provider);
 };
 
+const contractDeploy = async (props) => {
+    const { privateKey, name } = props;
+    let wallet = new ethers.Wallet(privateKey, provider);
+
+    let factory = new ethers.ContractFactory(Abis.NFT, Bytecode.NFT, wallet);
+    let contract = await factory.deploy(name + "'s  NFT", name + "NFT");
+    await contract.deployed();
+
+    return contract;
+};
+
 module.exports = {
     provider,
     lazyNFTContract,
@@ -43,4 +55,5 @@ module.exports = {
     marketplaceContract_m,
     getNFTContract,
     getNFTContract_m,
+    contractDeploy,
 };

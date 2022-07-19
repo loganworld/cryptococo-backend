@@ -1,7 +1,7 @@
 var colors = require("colors");
 const cron = require("node-cron");
 const ethers = require("ethers");
-const { provider } = require("../contracts/providers");
+const { provider } = require("../contracts");
 
 const handleEvent = async (props) => {
     const {
@@ -138,4 +138,11 @@ function fromBigNum(value, d) {
     return ethers.utils.formatUnits(value, d);
 }
 
-module.exports = { handleEvent, sign, delay, toBigNum, fromBigNum, getSigner };
+module.exports = {
+    handleEvent,
+    sign,
+    delay,
+    toBigNum,
+    fromBigNum,
+    getSigner,
+};

@@ -51,6 +51,43 @@ const nftControl = {
 
         return item;
     },
+    findCollection: async (props) => {
+        const { collectionAddress } = props;
+
+        const item = await NFT.findOne({
+            address: collectionAddress,
+        });
+
+        return item;
+    },
+    createCollection: async (props) => {
+        const {
+            logoImage,
+            bannerImage,
+            collectionAddress,
+            name,
+            extUrl,
+            desc,
+            fee,
+        } = props;
+
+        const newCollection = new NFT({
+            address: collectionAddress,
+            metadata: {
+                name: name,
+                description: desc,
+                coverImage: bannerImage,
+                image: logoImage,
+                external_url: extUrl,
+                fee: fee,
+                fee_recipent: process.env.OWNER,
+            },
+        });
+
+        let collection = await newCollection.save();
+
+        return collection;
+    },
 };
 
 module.exports = { nftControl };
