@@ -7,54 +7,65 @@ const Schema = mongoose.Schema;
 const NFTmetadata = new Schema({
     name: {
         type: String,
+        default: "",
     },
     description: {
         type: String,
+        default: "",
     },
     coverImage: {
         type: String,
+        default: "",
     },
     image: {
         type: String,
+        default: "",
     },
     external_url: {
         type: String,
+        default: "",
     },
     fee: {
         type: Number,
+        default: 0,
     },
     fee_recipent: {
         type: String,
+        default: "",
     },
 });
 
 const metadata = new Schema({
     image: {
         type: String,
+        default: "",
     },
-    image_data: {
+    external_url1: {
         type: String,
+        default: "",
     },
-    external_url: {
+    external_url2: {
         type: String,
+        default: "",
+    },
+    external_url3: {
+        type: String,
+        default: "",
+    },
+    external_url4: {
+        type: String,
+        default: "",
     },
     description: {
         type: String,
+        default: "",
     },
     name: {
         type: String,
+        default: "",
     },
     attributes: {
         type: Array,
-    },
-    background_color: {
-        type: String,
-    },
-    animation_url: {
-        type: String,
-    },
-    youtube_url: {
-        type: String,
     },
 });
 
@@ -108,6 +119,7 @@ const NFTs = new Schema({
     },
     address: {
         type: String,
+        default: "",
     },
     metadata: NFTmetadata,
     items: [item],

@@ -20,14 +20,13 @@ const typeDefs = gql`
 
     type metadata {
         image: String
-        image_data: String
-        external_url: String
+        external_url1: String
+        external_url2: String
+        external_url3: String
+        external_url4: String
         description: String
         name: String
         attributes: [attributes]
-        background_color: String
-        animation_url: String
-        youtube_url: String
     }
 
     type marketdata {
@@ -77,9 +76,9 @@ const typeDefs = gql`
 
     type Query {
         getAllNFTs: [item]
-        getNFTs(address : String): [item]
+        getNFTs(address: String): [item]
         getCollectionNFTs: [NFTs]
-        getCollectionNFT(address : String): [NFTs]
+        getCollectionNFT(address: String): [NFTs]
         getUserInfo(account: String): User
         getUsersInfo: [User]
     }

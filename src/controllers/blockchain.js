@@ -71,7 +71,9 @@ const manageNFTs = {
                             coverImage:
                                 "https://res.cloudinary.com/galaxy-digital/image/upload/v1653351729/marketplace/Background_8_egry4i.jpg",
                             image: "https://res.cloudinary.com/galaxy-digital/image/upload/v1652371143/icicbmetaverse/jatehwm95eitsdj87hhb.png",
-                            external_url: "",
+                            external_url1: "",
+                            external_url2: "",
+                            external_url3: "",
                             fee: "0.2",
                             fee_recipent: process.env.OWNER,
                         },

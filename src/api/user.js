@@ -2,8 +2,8 @@ const cloudinary = require("cloudinary").v2;
 const streamifier = require("streamifier");
 const { ethers } = require("ethers");
 const NFT = require("../models/nft");
-const { UserController } = require("../controllers/users");
-const jwtEncode = require('jwt-encode');
+const { UserController } = require("../controllers");
+// const jwtEncode = require('jwt-encode');
 const jwt = require("jsonwebtoken");
 
 module.exports = {
