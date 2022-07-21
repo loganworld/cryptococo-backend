@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 // Create Schema
 const AddressesSchema = new Schema({
-    nfts: {
+    default: {
         type: Array,
     },
     marketplace: {

@@ -16,9 +16,6 @@ module.exports = (router) => {
     // NFT Collection manage
     router.post("/create-collection", User.middleware, NFT.CreateCollection);
 
-    // test api
-    router.post("/test", NFT.test);
-
     // Auth manage
     router.post("/user-create", User.Create);
     router.post("/user-login", User.logIn);

@@ -1,8 +1,8 @@
 require("dotenv").config();
 const colors = require("colors");
 const NFT = require("../models/nft");
-const ADDRESSES = require("../models/addresses");
 const fileAddresses = require("../contracts/contracts/addresses.json");
+const { AddressController } = require("./addresses");
 
 const manageNFTs = {
     createNFT: async (props) => {
@@ -57,8 +57,7 @@ const manageNFTs = {
             // await NFT.remove();
 
             /** Get NFT Addresses */
-            const addresses = await manageNFTs.getAddresses({ id: 1 });
-
+            const addresses = await AddressController.getAddresses({ id: 1 });
             // NFT Skeleton ADD
             for (let i = 0; i < addresses.length; i++) {
                 const checking = await NFT.find({ address: addresses[i] });
@@ -238,18 +237,6 @@ const manageNFTs = {
             else return false;
         } catch (err) {
             console.log(colors.red(err));
-        }
-    },
-    getAddresses: async (props) => {
-        try {
-            const { id } = props; // 1: nfts address, 2: marketplace
-            const result = await ADDRESSES.find();
-
-            if (id === 1) return result[0].nfts;
-            else if (id === 2) return result[0].marketplace;
-        } catch (err) {
-            console.log(colors.red(err));
-            return null;
         }
     },
 };

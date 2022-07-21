@@ -8,6 +8,7 @@ const {
     provider,
 } = require("../contracts");
 const { manageNFTs } = require("../controllers/blockchain");
+const { AddressController } = require("../controllers/addresses");
 // const { fromBigNum } = require("../utils");
 
 const handleSync = async () => {
@@ -19,7 +20,7 @@ const handleSync = async () => {
         // let creatorArray = {};
 
         /** Get NFT Addresses */
-        const addresses = await manageNFTs.getAddresses({ id: 1 });
+        const addresses = await AddressController.getAddresses({ id: 1 });
 
         /* Get TotalSupply per NFT */
         // multicallProvider.init();

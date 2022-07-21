@@ -1,15 +1,17 @@
 require("dotenv").config();
 const ipfsAPI = require("ipfs-api");
+const bs58 = require("bs58");
 const ipfs = ipfsAPI(process.env.IPFS_HOST, process.env.IPFS_PORT, {
     protocol: process.env.IPFS_OPT,
 });
 const { nftControl } = require("../controllers/nft");
 const { manageNFTs } = require("../controllers/blockchain");
-const bs58 = require("bs58");
-const { sign, getSigner, toBigNum } = require("../utils/utils");
-const NFTModel = require("../models/nft");
-const { contractDeploy } = require("../contracts");
+const { BlockNumController } = require("../controllers/blocknum");
+const { AddressController } = require("../controllers/addresses");
+const { contractDeploy, provider, getNFTContract } = require("../contracts");
+const { sign, getSigner, toBigNum, handleEvent } = require("../utils/utils");
 const addresses = require("../contracts/contracts/addresses.json");
+const { newHandler } = require("../blockchainApis/handleEvent");
 
 module.exports = {
     MintNFT: async (req, res) => {
@@ -230,6 +232,8 @@ module.exports = {
                 });
             }
 
+            await AddressController.create({ newAddress: newContract.address });
+
             const result = await nftControl.createCollection({
                 bannerImage: bannerImage,
                 logoImage: logoImage,
@@ -238,12 +242,24 @@ module.exports = {
                 extUrl: extUrl,
                 desc: desc,
                 fee: fee,
+                fee_recipent: req.user.address,
             });
 
             if (result) {
                 res.json({
                     success: true,
                 });
+
+                handleEvent({
+                    id: newContract.address,
+                    provider: provider,
+                    contract: getNFTContract(newContract.address),
+                    event: "Transfer",
+                    times: 15,
+                    handler: newHandler,
+                    BlockNumController: BlockNumController,
+                });
+                console.log("create new handle process");
             }
         } catch (err) {
             console.log(err);
@@ -251,30 +267,6 @@ module.exports = {
                 success: false,
                 msg: "server error",
             });
-        }
-    },
-    test: async (req, res) => {
-        const { contractAddress, tokenId } = req.body;
-
-        try {
-            var result = await NFTModel.aggregate([
-                { $match: { address: contractAddress } },
-                {
-                    $project: {
-                        index: {
-                            $indexOfArray: ["$items.tokenID", tokenId],
-                        },
-                    },
-                },
-            ]);
-
-            console.log(result);
-
-            res.json({
-                result: result,
-            });
-        } catch (err) {
-            console.log(err);
         }
     },
 };

@@ -69,6 +69,7 @@ const nftControl = {
             extUrl,
             desc,
             fee,
+            fee_recipent,
         } = props;
 
         const newCollection = new NFT({
@@ -80,7 +81,7 @@ const nftControl = {
                 image: logoImage,
                 external_url: extUrl,
                 fee: fee,
-                fee_recipent: process.env.OWNER,
+                fee_recipent: fee_recipent,
             },
         });
 
