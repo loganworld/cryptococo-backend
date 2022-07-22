@@ -18,45 +18,45 @@ const handleTransation = async () => {
     try {
         const handler = async (tx, id) => {
             try {
-                let txData = {
-                    from: tx.args.from,
-                    to: tx.args.to,
-                    tokenId:
-                        id !== contractAddresses.StoreFront
-                            ? fromBigNum(tx.args.tokenId, 0)
-                            : tx.args.tokenId,
-                };
-
-                if (txData.from === ethers.constants.AddressZero) {
-                    if (id !== contractAddresses.StoreFront) {
-                        const contract = getNFTContract(id);
-                        const tokenUri = await contract.tokenURI(
-                            txData.tokenId
-                        );
-
-                        console.log(process.env.IPFS_BASEURL + tokenUri);
-                        const metadata = await axios.get(
-                            process.env.IPFS_BASEURL + tokenUri
-                        );
-
-                        await manageNFTs.createNFT({
-                            tokenId: txData.tokenId,
-                            contractAddress: id,
-                            ownerAddress: txData.to,
-                            metadata: metadata.data,
-                        });
-                        console.log("detect new NFT");
-                    }
-                } else {
-                    await manageNFTs.updateOwner({
-                        contractAddress: id,
-                        tokenId: txData.tokenId,
-                        newAddress: txData.to,
-                    });
-                    console.log("detect NFT update - transfer");
-                }
                 if (tx.event === "Transfer") {
+                    let txData = {
+                        from: tx.args.from,
+                        to: tx.args.to,
+                        tokenId:
+                            id !== contractAddresses.StoreFront
+                                ? fromBigNum(tx.args.tokenId, 0)
+                                : tx.args.tokenId,
+                    };
                     console.log("Transfer ", txData);
+                    if (txData.from === ethers.constants.AddressZero) {
+                        if (id !== contractAddresses.StoreFront) {
+                            const contract = getNFTContract(id);
+                            const tokenUri = await contract.tokenURI(
+                                txData.tokenId
+                            );
+
+                            console.log(process.env.IPFS_BASEURL + tokenUri);
+                            const metadata = await axios.get(
+                                process.env.IPFS_BASEURL + tokenUri
+                            );
+
+                            await manageNFTs.createNFT({
+                                tokenId: txData.tokenId,
+                                contractAddress: id,
+                                ownerAddress: txData.to,
+                                metadata: metadata.data,
+                            });
+                            console.log("detect new NFT");
+                        }
+                    } else {
+                        await manageNFTs.updateOwner({
+                            contractAddress: id,
+                            tokenId: txData.tokenId,
+                            newAddress: txData.to,
+                        });
+                        console.log("detect NFT update - transfer");
+                    }
+
                     const marketAddress = await AddressController.getAddresses({
                         id: 2,
                     });
