@@ -161,6 +161,7 @@ module.exports = {
                         ownerAddress: req.user.address,
                         metadata: metadata,
                         tokenId: tokenId,
+                        isOffchain: true,
                     });
 
                     if (result) {

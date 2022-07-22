@@ -54,6 +54,7 @@ const typeDefs = gql`
         owner: String
         metadata: metadata
         marketdata: marketdata
+        isOffchain: Boolean
     }
 
     type NFTs {

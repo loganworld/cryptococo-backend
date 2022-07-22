@@ -109,6 +109,7 @@ const item = new Schema({
         type: String,
         required: true,
     },
+    isOffchain: { type: Boolean, default: false },
     metadata: metadata,
     marketdata: marketdata,
 });
