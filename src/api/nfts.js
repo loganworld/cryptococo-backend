@@ -185,7 +185,7 @@ module.exports = {
     },
     LazyOnSale: async (req, res) => {
         try {
-            const { nftAddress, assetId, price, expiresAt } = req.body;
+            const { nftAddress, assetId, priceGwei, expiresAt } = req.body;
 
             const correctNFT = await nftControl.findNFT({
                 collectionAddress: nftAddress,
@@ -202,7 +202,7 @@ module.exports = {
                 tokenId: assetId,
                 owner: req.user.address,
                 market: addresses.Marketplace,
-                _priceInWei: toBigNum(price),
+                _priceInWei: priceGwei,
                 _expiresAt: toBigNum(expiresAt, 0),
                 signer: signer,
             };
