@@ -1,5 +1,7 @@
 var colors = require("colors");
 const cron = require("node-cron");
+const ethers = require("ethers");
+const { provider } = require("../contracts");
 
 const handleEvent = async (props) => {
     const {
@@ -77,4 +79,70 @@ const handleEvent = async (props) => {
     handleEvent();
 };
 
-module.exports = { handleEvent };
+const sign = async (data) => {
+    const { tokenId, owner, market, _priceInWei, _expiresAt, signer } = data;
+
+    try {
+        let messageHash = ethers.utils.solidityKeccak256(
+            ["uint", "address", "address", "uint", "uint"],
+            [tokenId, owner, market, _priceInWei, _expiresAt]
+        );
+        let signature = await signer.signMessage(
+            ethers.utils.arrayify(messageHash)
+        );
+        return signature;
+    } catch (err) {
+        console.log(err);
+        throw new Error(err.message);
+    }
+};
+
+const getSigner = async (props) => {
+    const { privateKey } = props;
+
+    const signer = new ethers.Wallet(
+        "e694a21afc32303e01f22994fb72f21eac72d7874f087e86b5ed47e7a8dc25eb",
+        provider
+    );
+
+    return signer;
+};
+
+/**
+ * set delay for delayTimes
+ * @param {Number} delayTimes - timePeriod for delay
+ */
+function delay(delayTimes) {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve(2);
+        }, delayTimes);
+    });
+}
+
+/**
+ * change data type from Number to BigNum
+ * @param {Number} value - data that need to be change
+ * @param {Number} d - decimals
+ */
+function toBigNum(value, d = 18) {
+    return ethers.utils.parseUnits(String(value), d);
+}
+
+/**
+ * change data type from BigNum to Number
+ * @param {Number} value - data that need to be change
+ * @param {Number} d - decimals
+ */
+function fromBigNum(value, d = 18) {
+    return ethers.utils.formatUnits(value, d);
+}
+
+module.exports = {
+    handleEvent,
+    sign,
+    delay,
+    toBigNum,
+    fromBigNum,
+    getSigner,
+};

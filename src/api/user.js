@@ -2,15 +2,14 @@ const cloudinary = require("cloudinary").v2;
 const streamifier = require("streamifier");
 const { ethers } = require("ethers");
 const NFT = require("../models/nft");
-const { UserController } = require("../controllers/users");
-const jwtEncode = require('jwt-encode');
+const { UserController } = require("../controllers");
+// const jwtEncode = require('jwt-encode');
 const jwt = require("jsonwebtoken");
 
 module.exports = {
     updateInfo: async (req, res) => {
         try {
-            const { previousImage, name, bio, email } =
-                req.body;
+            const { previousImage, name, bio, email } = req.body;
 
             if (
                 previousImage !== null &&
@@ -40,7 +39,6 @@ module.exports = {
                         }
                         let newImageUrl = result.url;
 
-
                         await UserController.update({
                             address: req.user.address,
                             name: name,
@@ -48,15 +46,18 @@ module.exports = {
                             email: email,
                             image: newImageUrl,
                         });
-                        const user = await UserController.checkInfo({ param: req.user.address, flag: 1 })
+                        const user = await UserController.checkInfo({
+                            param: req.user.address,
+                            flag: 1,
+                        });
 
                         var data = {
                             name: user.name,
                             email: user.email,
                             bio: user.bio,
                             address: user.address,
-                            privateKey: user.privateKey
-                        }
+                            privateKey: user.privateKey,
+                        };
                         const token = jwt.sign(data, process.env.JWT_SECRET, {
                             expiresIn: "144h",
                         });
@@ -76,17 +77,6 @@ module.exports = {
             });
         }
     },
-    test: async (req, res) => {
-        console.log(req.body.msg);
-
-        const result = await NFT.find({
-            address: "0x0741592db655f30192e18C732B46E9Ebb9aF641b",
-        });
-        console.log(result[0].items[2]);
-        // res.json({
-        //     result: result,
-        // });
-    },
     Create: async (req, res) => {
         try {
             const { name, email, password } = req.body.account;
@@ -98,8 +88,8 @@ module.exports = {
                 email: email,
                 password: password,
                 address: wallet.address,
-                privateKey: privateKey
-            })
+                privateKey: privateKey,
+            });
 
             res.json({ status: true });
         } catch (err) {
@@ -111,7 +101,7 @@ module.exports = {
             const { name, password } = req.body.account;
             const user = await UserController.findUser({
                 name: name,
-                password: password
+                password: password,
             });
             if (!user) throw new Error("Invalid Auth");
             const data = jwt.sign(user, process.env.JWT_SECRET, {
@@ -126,16 +116,19 @@ module.exports = {
 
     middleware: (req, res, next) => {
         try {
-            const token = req.headers.authorization || '';
+            const token = req.headers.authorization || "";
             jwt.verify(token, process.env.JWT_SECRET, async (err, userData) => {
                 console.log("Error: ", err);
                 if (err) return res.sendStatus(403);
-                const user = await UserController.checkInfo({ param: userData.name, flag: 3 })
+                const user = await UserController.checkInfo({
+                    param: userData.name,
+                    flag: 3,
+                });
                 req.user = user;
                 next();
             });
         } catch (err) {
             if (err) return res.sendStatus(403);
         }
-    }
+    },
 };
