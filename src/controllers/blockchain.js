@@ -141,6 +141,7 @@ const manageNFTs = {
             const data = await NFT.find({ address: contractAddress });
 
             if (contractAddress !== fileAddresses.StoreFront) {
+                let itemData = data[0].items.find((item) => item.tokenID == tokenId)
                 let key = "items." + tokenId + ".owner";
                 let price = "items." + tokenId + ".marketdata.price";
                 let preowner = "items." + tokenId + ".marketdata.owner";
@@ -169,8 +170,8 @@ const manageNFTs = {
                             [offchain]: false,
                         },
                         $push: {
-                            [owners]: data[0].items[tokenId].marketdata.owner,
-                            [prices]: data[0].items[tokenId].marketdata.price,
+                            [owners]: itemData?.marketdata.owner,
+                            [prices]: itemData?.marketdata.price,
                         },
                     }
                 );
@@ -185,6 +186,9 @@ const manageNFTs = {
                         },
                     },
                 ]);
+                
+                let itemData = data[0].items.find((item) => item.tokenID == nftIndex[0].index);
+
                 let key = "items." + nftIndex[0].index + ".owner";
                 let price = "items." + nftIndex[0].index + ".marketdata.price";
                 let preowner =
@@ -221,10 +225,10 @@ const manageNFTs = {
                         },
                         $push: {
                             [owners]:
-                                data[0].items[nftIndex[0].index].marketdata
+                                itemData?.marketdata
                                     .owner,
                             [prices]:
-                                data[0].items[nftIndex[0].index].marketdata
+                                itemData?.marketdata
                                     .price,
                         },
                     }

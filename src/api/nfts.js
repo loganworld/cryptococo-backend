@@ -58,49 +58,18 @@ module.exports = {
                 };
 
                 let bufferfile = Buffer.from(JSON.stringify(metadata));
+                
                 ipfs.files.add(bufferfile, function (err, file) {
                     if (err || file === undefined) {
                         throw new Error("ipfs error");
                     }
-                    let imageUrl = file[0].hash;
-
-                    let attr = [];
-                    let attrJSON = JSON.parse(attribute);
-                    for (let x in attrJSON) {
-                        if (
-                            attrJSON[x].key.trim() !== "" &&
-                            attrJSON[x].value.trim() !== ""
-                        ) {
-                            attr.push(attrJSON[x]);
-                        } else {
-                            break;
-                        }
-                    }
-
-                    const metadata = {
-                        image: process.env.IPFS_BASEURL + imageUrl,
-                        external_url: extlink,
-                        description: desc,
-                        name: name,
-                        attributes: attr,
-                        background_color: "white",
-                        animation_url: "",
-                        youtube_url: "",
-                    };
-
-                    let bufferfile = Buffer.from(JSON.stringify(metadata));
-                    ipfs.files.add(bufferfile, function (err, file) {
-                        if (err || file === undefined) {
-                            throw new Error("ipfs error");
-                        }
-                        let nftUrl = file[0].hash;
-                        res.json({
-                            success: true,
-                            url: nftUrl,
-                        });
+                    let nftUrl = file[0].hash;
+                    res.json({
+                        success: true,
+                        url: nftUrl,
                     });
-
                 });
+
             });
         } catch (err) {
             console.log(err.message);

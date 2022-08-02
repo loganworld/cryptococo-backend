@@ -31,21 +31,26 @@ const handleTransation = async () => {
                     if (txData.from === ethers.constants.AddressZero) {
                         if (id !== contractAddresses.StoreFront) {
                             const contract = getNFTContract(id);
-                            const tokenUri = await contract.tokenURI(
-                                txData.tokenId
-                            );
+                            try {
+                                const tokenUri = await contract.tokenURI(
+                                    txData.tokenId
+                                );
 
-                            console.log(process.env.IPFS_BASEURL + tokenUri);
-                            const metadata = await axios.get(
-                                process.env.IPFS_BASEURL + tokenUri
-                            );
+                                console.log(process.env.IPFS_BASEURL + tokenUri);
 
-                            await manageNFTs.createNFT({
-                                tokenId: txData.tokenId,
-                                contractAddress: id,
-                                ownerAddress: txData.to,
-                                metadata: metadata.data,
-                            });
+                                const metadata = await axios.get(
+                                    process.env.IPFS_BASEURL + tokenUri
+                                );
+
+                                await manageNFTs.createNFT({
+                                    tokenId: txData.tokenId,
+                                    contractAddress: id,
+                                    ownerAddress: txData.to,
+                                    metadata: metadata.data,
+                                });
+                            } catch (err) {
+                                //default data
+                            }
                             console.log("detect new NFT");
                         }
                     } else {
