@@ -73,6 +73,7 @@ const typeDefs = gql`
         backgroundimage: String
         follow: Int
         description: String
+        privateKey: String
     }
 
     type Query {

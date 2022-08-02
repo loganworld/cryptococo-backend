@@ -19,7 +19,7 @@ const UserController = {
             password: password,
             address: address,
             privateKey: privateKey,
-            image: ""
+            image: "",
         });
 
         let userData = await newUser.save();
@@ -72,7 +72,9 @@ const UserController = {
     },
     findUser: async (props) => {
         const { name, password } = props;
-        const users = await UserSchema.findOne({ $or: [{ name: name }, { email: name }] }).findOne({ password: password });
+        const users = await UserSchema.findOne({
+            $or: [{ name: name }, { email: name }],
+        }).findOne({ password: password });
         console.log(users);
         if (users) {
             var data = {
@@ -80,13 +82,13 @@ const UserController = {
                 email: users.email,
                 bio: users.bio,
                 address: users.address,
-                privateKey: users.privateKey
-            }
+                privateKey: users.privateKey,
+            };
             return data;
         } else {
             return false;
         }
-    }
+    },
 };
 
 module.exports = { UserController };

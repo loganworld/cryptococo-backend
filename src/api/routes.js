@@ -1,7 +1,8 @@
 const cloudinary = require("cloudinary").v2;
 
-const NFT = require("../api/nfts");
-const User = require("../api/user");
+const NFT = require("./nfts");
+const Admin = require("./admin");
+const User = require("./user");
 const config = require("../config");
 
 cloudinary.config(config.cloudinary);
@@ -16,8 +17,13 @@ module.exports = (router) => {
     // NFT Collection manage
     router.post("/create-collection", User.middleware, NFT.CreateCollection);
 
-    // Auth manage
+    // User Auth manage
     router.post("/user-create", User.Create);
     router.post("/user-login", User.logIn);
     router.post("/user-update", User.middleware, User.updateInfo);
+
+    // Admin Auth manage
+    router.post("/admin-create", Admin.Create);
+    router.post("/admin-login", Admin.Login);
+    router.post("/admin-update", Admin.Update, User.updateInfo);
 };
