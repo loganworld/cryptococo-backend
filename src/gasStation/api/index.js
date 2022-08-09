@@ -1,10 +1,11 @@
-import Stripe from 'stripe';
-import { RequestUpdator, PriceUpdator } from "./updators";
-const { PriceController, EXRequestController } = require("../controllers")
+const Stripe = require('stripe');
+const { RequestUpdator, PriceUpdator } = require("./updators");
+const { PriceController, EXRequestController, AdminController } = require("../controllers")
 
 // turn on updator
 RequestUpdator();
 PriceUpdator();
+AdminController.createSetting();
 
 module.exports = {
     /** 
@@ -118,5 +119,32 @@ module.exports = {
 
         return res.status(200).send({ received: true });
     },
-    
+    /**
+     * set admin fee
+     * @param  {Number} newFee 
+     */
+    setAdminFee: async (req, res) => {
+        const { newFee } = req.body;
+        if (newFee && Number(newFee) > 0 && Number(newFee) < 100) {
+            await AdminController.updateSetting({ ExchangeFee: newFee })
+        }
+    },
+    /**
+     * get Exchange fee
+     * @return param  {Number} ExFee 
+     */
+    getFee: async (req, res) => {
+        const ExFee = await AdminController.getSetting().ExchangeFee;
+        res.status(200).send(ExFee);
+    },
+    /**
+     * get all requests for user
+     * @return param  {[{userAddress,amount,price,currency,status,sessionId}]} requests 
+     */
+    getRequests: async (req, res) => {
+        const userAddress = req.user.address;
+        if (!userAddress) return res.status(500).send({ error: "invalid auth" })
+        const requests = await EXRequestController.findRequests({ address: userAddress })
+        res.status(200).send(requests);
+    }
 }

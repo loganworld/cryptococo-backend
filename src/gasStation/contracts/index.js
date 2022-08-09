@@ -1,4 +1,5 @@
 
+const ethers = require("ethers")
 const Abis = require("./contracts/treasury-abis.json");
 const Addresses = require("./contracts/treasury-addresses.json");
 const { provider } = require("../../contracts");
@@ -11,4 +12,4 @@ const TreasuryContract = new ethers.Contract(
     Abis.treasury,
     adminWallet
 );
-module.exports = { TreasuryContract ,provider}
+module.exports = { TreasuryContract, provider }

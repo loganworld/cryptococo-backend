@@ -25,4 +25,9 @@ module.exports = (router) => {
     // credit card
     router.post("/payment/session-initiate", User.middleware, gasStation.newRequest);
     router.post("/payment/session-complete", gasStation.completePayment);
+    router.post("/payment/request", User.middleware, gasStation.getRequests);
+
+    // admin actions
+    router.post("/admin/getFee",User.adminMiddleware,gasStation.getFee);
+    router.post("/admin/setFee",User.adminMiddleware,gasStation.setAdminFee);
 };

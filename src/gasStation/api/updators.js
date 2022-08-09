@@ -10,7 +10,7 @@ const PriceUpdator = async () => {
     const updator = async () => {
         try {
             const priceEndPoint = "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=jpy%2Cusd%2Ceur"
-            const prices = await Axios.get(priceEndPoint);
+            const prices = (await Axios.get(priceEndPoint)).data;
             if (!prices?.ethereum) return;
             await PriceController.updatePrices({
                 ETHEURPrice: prices.ethereum.eur,

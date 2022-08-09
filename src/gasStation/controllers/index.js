@@ -1,5 +1,5 @@
 const colors = require("colors");
-const { ExchangeRequests, ETHPrices } = require("./models");
+const { ExchangeRequests, ETHPrices, AdminSettings } = require("./models");
 
 const EXRequestController = {
     // create new request
@@ -51,7 +51,7 @@ const PriceController = {
             prices.ETHEURPrice = ETHEURPrice;
             prices.ETHUSDPrice = ETHUSDPrice;
             prices.ETHJPYPrice = ETHJPYPrice;
-            await newPrices.save();
+            await prices.save();
         }
     },
     getPrices: async (props) => {
@@ -60,7 +60,25 @@ const PriceController = {
     }
 }
 
+const AdminController = {
+    updateSetting: async (props) => {
+        const { newSetting } = props;
+        const adminSettings = await AdminSettings.updateOne({}, { $set: newSetting });
+        return adminSettings;
+    },
+    createSetting: async (props) => {
+        var adminSettings = await AdminSettings.findOne();
+        if (adminSettings) return;
+        adminSettings = new AdminSettings({ ExchangeFee: 5 });
+        await adminSettings.save();
+    },
+    getSetting: async (props) => {
+        return await AdminSettings.findOne();
+    }
+}
+
 module.exports = {
     EXRequestController,
-    PriceController
+    PriceController,
+    AdminController
 }
