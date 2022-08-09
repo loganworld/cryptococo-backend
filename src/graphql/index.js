@@ -61,10 +61,7 @@ const resolvers = {
                     account !== undefined &&
                     account !== null
                 ) {
-                    const checkAccount = await UserController.checkInfo({
-                        flag: 1,
-                        param: account,
-                    });
+                    const checkAccount = await UserController.checkInfo({ address: account });
 
                     if (!checkAccount) {
                         let result = await UserController.create({

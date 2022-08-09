@@ -47,8 +47,7 @@ module.exports = {
                             image: newImageUrl,
                         });
                         const user = await UserController.checkInfo({
-                            param: req.user.address,
-                            flag: 1,
+                            address: req.user.address,
                         });
 
                         var data = {
@@ -120,10 +119,22 @@ module.exports = {
             jwt.verify(token, process.env.JWT_SECRET, async (err, userData) => {
                 console.log("Error: ", err);
                 if (err) return res.sendStatus(403);
-                const user = await UserController.checkInfo({
-                    param: userData.name,
-                    flag: 3,
-                });
+                const user = await UserController.checkInfo({ name: userData.name });
+                req.user = user;
+                next();
+            });
+        } catch (err) {
+            if (err) return res.sendStatus(403);
+        }
+    },
+    adminMiddleware: (req, res, next) => {
+        try {
+            const token = req.headers.authorization || "";
+            jwt.verify(token, process.env.JWT_SECRET, async (err, userData) => {
+                console.log("Error: ", err);
+                if (err) return res.sendStatus(403);
+                const user = await UserController.checkInfo({ name: userData.name });
+                if (!user.isAdmin) return res.sendStatus(403);
                 req.user = user;
                 next();
             });

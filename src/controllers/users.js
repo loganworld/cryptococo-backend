@@ -46,24 +46,8 @@ const UserController = {
         return result;
     },
     checkInfo: async (props) => {
-        const { param, flag } = props;
-
-        let result;
-        switch (flag) {
-            case 1: // address check
-                result = await UserSchema.findOne({ address: param });
-                break;
-            case 2: // email check
-                result = await UserSchema.findOne({ email: param });
-                break;
-            case 3: // name check
-                result = await UserSchema.findOne({ name: param });
-                break;
-            default:
-                break;
-        }
-
-        return result;
+        const { filter } = props;
+        return await UserSchema.findOne(filter);
     },
     getUsersInfo: async () => {
         const users = await UserSchema.find();
