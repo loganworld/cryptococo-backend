@@ -28,7 +28,7 @@ const handleEvent = async (props) => {
             if (blockNumber > latestblocknumber) {
                 blockNumber =
                     blockNumber > latestblocknumber + 20
-                        ? latestblocknumber + 100
+                        ? latestblocknumber + 20
                         : blockNumber;
 
                 var txhistory = contract.queryFilter(

@@ -40,14 +40,14 @@ app.use("/api", router);
 //blockchain Handle
 blockchainHandle();
 
-app.use(express.static(__dirname + "/../crypto-coco-frontend/build"));
-app.get("/*", function (req, res) {
-    res.sendFile(__dirname + "/index.html", function (err) {
-        if (err) {
-            res.status(500).send(err);
-        }
-    });
-});
+// app.use(express.static(__dirname + "/../crypto-coco-frontend/build"));
+// app.get("/*", function (req, res) {
+//     res.sendFile(__dirname + "/index.html", function (err) {
+//         if (err) {
+//             res.status(500).send(err);
+//         }
+//     });
+// });
 
 const startApolloServer = async (typeDefs, resolvers) => {
     const server = new ApolloServer({

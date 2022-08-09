@@ -58,6 +58,7 @@ module.exports = {
                 };
 
                 let bufferfile = Buffer.from(JSON.stringify(metadata));
+                
                 ipfs.files.add(bufferfile, function (err, file) {
                     if (err || file === undefined) {
                         throw new Error("ipfs error");
@@ -68,6 +69,7 @@ module.exports = {
                         url: nftUrl,
                     });
                 });
+
             });
         } catch (err) {
             console.log(err.message);
