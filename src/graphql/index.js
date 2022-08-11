@@ -52,31 +52,6 @@ const resolvers = {
                 console.log(err);
             }
         },
-        getUserInfo: async (parent, args, context, info) => {
-            try {
-                const { account } = args;
-
-                if (
-                    account !== "" &&
-                    account !== undefined &&
-                    account !== null
-                ) {
-                    const checkAccount = await UserController.checkInfo({ address: account });
-
-                    if (!checkAccount) {
-                        let result = await UserController.create({
-                            address: account,
-                        });
-
-                        return result;
-                    } else {
-                        return checkAccount;
-                    }
-                }
-            } catch (err) {
-                console.log(err);
-            }
-        },
         getUsersInfo: async (parent, args, context, info) => {
             try {
                 const allImages = await UserController.getUsersInfo();

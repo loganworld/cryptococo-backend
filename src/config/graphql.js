@@ -81,7 +81,6 @@ const typeDefs = gql`
         getNFTs(address: String): [item]
         getCollectionNFTs: [NFTs]
         getCollectionNFT(address: String): [NFTs]
-        getUserInfo(account: String): User
         getUsersInfo: [User]
     }
 `;  

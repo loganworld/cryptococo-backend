@@ -56,6 +56,7 @@ module.exports = {
                             bio: user.bio,
                             address: user.address,
                             privateKey: user.privateKey,
+                            image: user.image,
                         };
                         const token = jwt.sign(data, process.env.JWT_SECRET, {
                             expiresIn: "144h",
@@ -119,7 +120,9 @@ module.exports = {
             jwt.verify(token, process.env.JWT_SECRET, async (err, userData) => {
                 console.log("Error: ", err);
                 if (err) return res.sendStatus(403);
-                const user = await UserController.checkInfo({ name: userData.name });
+                const user = await UserController.checkInfo({
+                    name: userData.name,
+                });
                 req.user = user;
                 next();
             });
@@ -133,7 +136,9 @@ module.exports = {
             jwt.verify(token, process.env.JWT_SECRET, async (err, userData) => {
                 console.log("Error: ", err);
                 if (err) return res.sendStatus(403);
-                const user = await UserController.checkInfo({ name: userData.name });
+                const user = await UserController.checkInfo({
+                    name: userData.name,
+                });
                 if (!user.isAdmin) return res.sendStatus(403);
                 req.user = user;
                 next();

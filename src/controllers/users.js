@@ -67,6 +67,7 @@ const UserController = {
                 bio: users.bio,
                 address: users.address,
                 privateKey: users.privateKey,
+                image: users.image,
             };
             return data;
         } else {

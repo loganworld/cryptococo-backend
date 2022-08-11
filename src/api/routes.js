@@ -1,8 +1,10 @@
 const cloudinary = require("cloudinary").v2;
 
-const NFT = require("../api/nfts");
-const User = require("../api/user");
+const NFT = require("./nfts");
+const Admin = require("./admin");
+const User = require("./user");
 const config = require("../config");
+const gasStation = require("../gasStation/api");
 
 cloudinary.config(config.cloudinary);
 
@@ -20,4 +22,22 @@ module.exports = (router) => {
     router.post("/user-create", User.Create);
     router.post("/user-login", User.logIn);
     router.post("/user-update", User.middleware, User.updateInfo);
+
+    // Admin Auth manage
+    router.post("/admin-create", Admin.Create);
+    router.post("/admin-login", Admin.Login);
+    router.post("/admin-update", Admin.Update, User.updateInfo);
+
+    // admin actions
+    router.post("/admin/getFee", User.adminMiddleware, gasStation.getFee);
+    router.post("/admin/setFee", User.adminMiddleware, gasStation.setAdminFee);
+
+    // credit card
+    router.post(
+        "/payment/session-initiate",
+        User.middleware,
+        gasStation.newRequest
+    );
+    router.post("/payment/session-complete", gasStation.completePayment);
+    router.post("/payment/request", User.middleware, gasStation.getRequests);
 };

@@ -5,25 +5,29 @@ const EXRequestController = {
     // create new request
     createRequest: async (props) => {
         const { userAddress, amount, price, currency, sessionId } = props;
-        const newRequest = new ExchangeRequests({ userAddress, amount, price, currency, sessionId });
+        const newRequest = new ExchangeRequests({
+            userAddress,
+            amount,
+            price,
+            currency,
+            sessionId,
+        });
         await newRequest.save();
     },
+
     // update request status: onProcessing, success, failed, rejected
     updateRequest: async (props) => {
         const { filter, status } = props;
-        const request = await ExchangeRequests.updateOne(
-            filter,
-            {
-                $set: {
-                    status: status
-                }
-            }
-        );
+        const request = await ExchangeRequests.updateOne(filter, {
+            $set: {
+                status: status,
+            },
+        });
         return request;
     },
     removeRequest: async (props) => {
         const { filter } = props;
-        await ExchangeRequests.deleteOne(filter)
+        await ExchangeRequests.deleteOne(filter);
     },
     findRequests: async (props) => {
         const { filter } = props;
@@ -34,8 +38,8 @@ const EXRequestController = {
         const { filter } = props;
         const request = await ExchangeRequests.findOne(filter);
         return request;
-    }
-}
+    },
+};
 
 const PriceController = {
     updatePrices: async (props) => {

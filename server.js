@@ -4,6 +4,7 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const cors = require("cors");
 const fileUpload = require("express-fileupload");
+const jwt = require("jsonwebtoken");
 
 const config = require("./src/config");
 const routes = require("./src/api/routes");
@@ -55,6 +56,12 @@ const startApolloServer = async (typeDefs, resolvers) => {
         resolvers,
         csrfPrevention: true,
         cache: "bounded",
+        context: async ({ req, res }) => {
+            const token = req.headers.authorization || "";
+            jwt.verify(token, process.env.JWT_SECRET, async (err, _) => {
+                if (err) return res.sendStatus(403);
+            });
+        },
     });
 
     await server.start();
