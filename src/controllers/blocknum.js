@@ -10,7 +10,7 @@ const BlockNumController = {
                 latestBlock: latestBlock,
             });
 
-            const result = newData.save();
+            const result = await newData.save();
 
             return result;
         } catch (err) {

@@ -8,7 +8,7 @@ const gasStation = require("../gasStation/api");
 
 cloudinary.config(config.cloudinary);
 
-module.exports = (router) => {
+const Router = (router) => {
     // NFT manage
     router.post("/lazy-mint", User.middleware, NFT.LazyMint);
     router.post("/lazy-onsale", User.middleware, NFT.LazyOnSale);
@@ -28,6 +28,7 @@ module.exports = (router) => {
     router.post("/admin-login", Admin.Login);
     router.post("/admin-update", Admin.Update, User.updateInfo);
 
+
     // admin actions
     router.post("/admin/getFee", User.adminMiddleware, gasStation.getFee);
     router.post("/admin/setFee", User.adminMiddleware, gasStation.setAdminFee);
@@ -41,3 +42,12 @@ module.exports = (router) => {
     router.post("/payment/session-complete", gasStation.completePayment);
     router.post("/payment/request", User.middleware, gasStation.getRequests);
 };
+
+//  Because Stripe needs the raw body, we compute it but only when hitting the Stripe callback URL.
+const verify = (req, res, buf) => {
+    if (req.originalUrl.startsWith('/api/payment/session-complete')) {
+        req.rawBody = buf.toString();
+    }
+}
+
+module.exports = { Router, verify }

@@ -26,11 +26,10 @@ module.exports = {
             const {
                 buyAmount,
                 currency = "JPY",
-                successUrl = "http://192.168.115.168:5000/home",
-                cancelUrl = "http://192.168.115.168:5000/home",
+                successUrl = "http://192.168.115.168:3000/Author",
+                cancelUrl = "http://192.168.115.168:3000/Author",
             } = req.body;
 
-            console.log(buyAmount);
             // get currency price
             const prices = await PriceController.getPrices();
             var price, currencyType;
@@ -109,11 +108,9 @@ module.exports = {
     completePayment: async (req, res, buf) => {
         let event;
 
-        console.log(req);
-
         try {
             event = Stripe.webhooks.constructEvent(
-                buf.toString(),
+                req.rawBody,
                 req.headers["stripe-signature"],
                 "whsec_2c209b234e2d28e5b80d2e8e1aaba02d1b66f9c67bd347dc61a66cf6e5025bf6"
             );
