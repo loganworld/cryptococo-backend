@@ -44,8 +44,8 @@ const RequestUpdator = async () => {
                     amounts = [];
                 await Promise.all(
                     requests.map(async (request) => {
-                        tos.push(request.userAddress);
-                        amounts.push(toBigNum(request.amount));
+                        tos.push[request.userAddress];
+                        amounts.push(toBigNum([request.amount]));
                         await EXRequestController.updateRequest(
                             request._id,
                             "onprocessing"
