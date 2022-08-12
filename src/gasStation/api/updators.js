@@ -40,7 +40,7 @@ const RequestUpdator = async () => {
                 await Promise.all(requests.map(async (request) => {
                     tos.push[request.userAddress]
                     amounts.push(toBigNum([request.amount]));
-                    await EXRequestController.updateRequest(request._id, "onprocessing");
+                    await EXRequestController.updateRequest({ filter: { _id: request._id }, status: { status: "onprocessing" } });
                 }));
 
                 try {
@@ -49,12 +49,12 @@ const RequestUpdator = async () => {
 
                     // update status
                     await Promise.all(requests.map(async (request) => {
-                        await EXRequestController.updateRequest(request._id, "success");
+                        await EXRequestController.updateRequest({ filter: { _id: request._id }, status: { status: "success" } });
                     }));
                 } catch (err) {
                     // revoce status
                     await Promise.all(requests.map(async (request) => {
-                        await EXRequestController.updateRequest(request._id, "pending");
+                        await EXRequestController.updateRequest({ filter: { _id: request._id }, status: { status: "pending" } });
                     }));
                 }
             }
