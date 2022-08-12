@@ -7,7 +7,7 @@ const {
 } = require("../contracts");
 const { manageNFTs, manageOrder } = require("../controllers/blockchain");
 const { AddressController } = require("../controllers/addresses");
-const { fromBigNum } = require("../utils");
+const { fromBigNum, toBigNum } = require("../utils");
 const { handleEvent } = require("../utils/utils");
 const { BlockNumController } = require("../controllers/blocknum");
 const { ethers } = require("ethers");
@@ -36,7 +36,9 @@ const handleTransation = async () => {
                                     txData.tokenId
                                 );
 
-                                console.log(process.env.IPFS_BASEURL + tokenUri);
+                                console.log(
+                                    process.env.IPFS_BASEURL + tokenUri
+                                );
 
                                 const metadata = await axios.get(
                                     process.env.IPFS_BASEURL + tokenUri
@@ -102,7 +104,7 @@ const handleTransation = async () => {
                     manageOrder
                         .placeBid({
                             collectionAddress: txData.collectionAddress,
-                            assetId: txData.assetId,
+                            assetId: toBigNum(txData.assetId, 0),
                             bidder: txData.bidder,
                             price: txData.price,
                             expiresAt: txData.expiresAt,

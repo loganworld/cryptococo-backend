@@ -1,10 +1,35 @@
 const NFT = require("../models/nft");
+const fileAddresses = require("../contracts/contracts/addresses.json");
 
 const nftControl = {
     update: async (props) => {
         const { id, collection, currentAddress } = props;
 
-        let key = "items." + id + ".likes";
+        var tokenIndex;
+        if (collection !== fileAddresses.StoreFront) {
+            tokenIndex = await NFT.aggregate([
+                { $match: { address: collection } },
+                {
+                    $project: {
+                        index: {
+                            $indexOfArray: ["$items.tokenID", id],
+                        },
+                    },
+                },
+            ]);
+        } else {
+            tokenIndex = await NFT.aggregate([
+                { $match: { address: collection } },
+                {
+                    $project: {
+                        index: {
+                            $indexOfArray: ["$items.tokenID", id],
+                        },
+                    },
+                },
+            ]);
+        }
+        let key = "items." + tokenIndex[0].index + ".likes";
         const itemCheck = await NFT.findOne({
             $and: [
                 {
