@@ -9,7 +9,7 @@ const AddressController = {
         try {
             const result = await ADDRESSES.updateOne({
                 $push: {
-                    default: newAddress,
+                    nfts: newAddress,
                 },
             });
 
