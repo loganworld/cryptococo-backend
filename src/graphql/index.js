@@ -1,5 +1,6 @@
 const NFT = require("../models/nft");
 const { UserController } = require("../controllers/users");
+const { PriceController } = require("../gasStation/controllers");
 
 const resolvers = {
     Query: {
@@ -57,6 +58,15 @@ const resolvers = {
                 const allImages = await UserController.getUsersInfo();
 
                 return allImages;
+            } catch (err) {
+                console.log(err);
+            }
+        },
+        getPrice: async (parent, args, context, info) => {
+            try {
+                const prices = await PriceController.getPrices();
+
+                return prices;
             } catch (err) {
                 console.log(err);
             }

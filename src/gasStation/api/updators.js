@@ -34,7 +34,9 @@ const RequestUpdator = async () => {
         try {
             // get pending requests
             let requests = await EXRequestController.findRequests({
-                status: "pending",
+                filter: {
+                    status: "pending",
+                },
             });
             requests.splice(15);
 
@@ -54,9 +56,11 @@ const RequestUpdator = async () => {
                 );
 
                 try {
+                    if (tos.length === 0) {
+                        return;
+                    }
                     var tx = await TreasuryContract.multiSend(tos, amounts);
                     await tx.wait();
-                    console.log("tos :  ", tos);
 
                     // update status
                     await Promise.all(

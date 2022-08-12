@@ -41,14 +41,14 @@ app.use("/api", router);
 //blockchain Handle
 blockchainHandle();
 
-app.use(express.static(__dirname + "/../crypto-coco-frontend/build"));
-app.get("/*", function (req, res) {
-    res.sendFile(__dirname + "/index.html", function (err) {
-        if (err) {
-            res.status(500).send(err);
-        }
-    });
-});
+// app.use(express.static(__dirname + "/../crypto-coco-frontend/build"));
+// app.get("/*", function (req, res) {
+//     res.sendFile(__dirname + "/index.html", function (err) {
+//         if (err) {
+//             res.status(500).send(err);
+//         }
+//     });
+// });
 
 const startApolloServer = async (typeDefs, resolvers) => {
     const server = new ApolloServer({
@@ -56,12 +56,12 @@ const startApolloServer = async (typeDefs, resolvers) => {
         resolvers,
         csrfPrevention: true,
         cache: "bounded",
-        context: async ({ req, res }) => {
-            const token = req.headers.authorization || "";
-            jwt.verify(token, process.env.JWT_SECRET, async (err, _) => {
-                if (err) return res.sendStatus(403);
-            });
-        },
+        // context: async ({ req, res }) => {
+        //     const token = req.headers.authorization || "";
+        //     jwt.verify(token, process.env.JWT_SECRET, async (err, _) => {
+        //         if (err) return res.sendStatus(403);
+        //     });
+        // },
     });
 
     await server.start();

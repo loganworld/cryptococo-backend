@@ -26,9 +26,14 @@ module.exports = {
             const {
                 buyAmount,
                 currency = "JPY",
-                successUrl = "http://192.168.115.168:3000/Author",
-                cancelUrl = "http://192.168.115.168:3000/Author",
+                successUrl = "http://31.220.21.14/Author",
+                cancelUrl = "http://31.220.21.14/Author",
             } = req.body;
+
+            if (buyAmount > 1) {
+                res.status(400).send({ error });
+                return;
+            }
 
             // get currency price
             const prices = await PriceController.getPrices();
@@ -107,7 +112,7 @@ module.exports = {
      */
     completePayment: async (req, res, buf) => {
         let event;
-
+        console.log("event ============ ", event);
         try {
             event = Stripe.webhooks.constructEvent(
                 req.rawBody,
@@ -161,7 +166,9 @@ module.exports = {
         if (!userAddress)
             return res.status(500).send({ error: "invalid auth" });
         const requests = await EXRequestController.findRequests({
-            address: userAddress,
+            filter: {
+                address: userAddress,
+            },
         });
         res.status(200).send(requests);
     },

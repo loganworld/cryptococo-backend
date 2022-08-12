@@ -76,13 +76,20 @@ const typeDefs = gql`
         privateKey: String
     }
 
+    type Prices {
+        ETHEURPrice: Float
+        ETHUSDPrice: Float
+        ETHJPYPrice: Float
+    }
+
     type Query {
         getAllNFTs: [item]
         getNFTs(address: String): [item]
         getCollectionNFTs: [NFTs]
         getCollectionNFT(address: String): [NFTs]
         getUsersInfo: [User]
+        getPrice: Prices
     }
-`;  
+`;
 
 module.exports = { typeDefs };
