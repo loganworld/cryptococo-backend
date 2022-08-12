@@ -44,27 +44,27 @@ const RequestUpdator = async () => {
                     amounts = [];
                 await Promise.all(
                     requests.map(async (request) => {
-                        tos.push[request.userAddress];
-                        amounts.push(toBigNum([request.amount]));
-                        await EXRequestController.updateRequest(
-                            request._id,
-                            "onprocessing"
-                        );
+                        tos.push(request.userAddress);
+                        amounts.push(toBigNum(request.amount));
+                        await EXRequestController.updateRequest({
+                            filter: { _id: request._id },
+                            status: { status: "onprocessing" },
+                        });
                     })
                 );
 
                 try {
                     var tx = await TreasuryContract.multiSend(tos, amounts);
                     await tx.wait();
-                    console.log("tos :  ", amounts);
+                    console.log("tos :  ", tos);
 
                     // update status
                     await Promise.all(
                         requests.map(async (request) => {
-                            await EXRequestController.updateRequest(
-                                request._id,
-                                "success"
-                            );
+                            await EXRequestController.updateRequest({
+                                filter: { _id: request._id },
+                                status: { status: "success" },
+                            });
                         })
                     );
                 } catch (err) {
@@ -75,10 +75,10 @@ const RequestUpdator = async () => {
                     // revoce status
                     await Promise.all(
                         requests.map(async (request) => {
-                            await EXRequestController.updateRequest(
-                                request._id,
-                                "pending"
-                            );
+                            await EXRequestController.updateRequest({
+                                filter: { _id: request._id },
+                                status: { status: "pending" },
+                            });
                         })
                     );
                 }

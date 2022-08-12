@@ -19,9 +19,7 @@ const EXRequestController = {
     updateRequest: async (props) => {
         const { filter, status } = props;
         const request = await ExchangeRequests.updateOne(filter, {
-            $set: {
-                status: status,
-            },
+            $set: status,
         });
         return request;
     },
@@ -47,11 +45,12 @@ const PriceController = {
         const prices = await ETHPrices.findOne();
         if (!prices) {
             const newPrices = new ETHPrices({
-                ETHEURPrice, ETHUSDPrice, ETHJPYPrice
+                ETHEURPrice,
+                ETHUSDPrice,
+                ETHJPYPrice,
             });
             await newPrices.save();
-        }
-        else {
+        } else {
             prices.ETHEURPrice = ETHEURPrice;
             prices.ETHUSDPrice = ETHUSDPrice;
             prices.ETHJPYPrice = ETHJPYPrice;
@@ -60,14 +59,17 @@ const PriceController = {
     },
     getPrices: async (props) => {
         const prices = await ETHPrices.findOne();
-        return prices
-    }
-}
+        return prices;
+    },
+};
 
 const AdminController = {
     updateSetting: async (props) => {
         const { newSetting } = props;
-        const adminSettings = await AdminSettings.updateOne({}, { $set: newSetting });
+        const adminSettings = await AdminSettings.updateOne(
+            {},
+            { $set: newSetting }
+        );
         return adminSettings;
     },
     createSetting: async (props) => {
@@ -78,11 +80,11 @@ const AdminController = {
     },
     getSetting: async (props) => {
         return await AdminSettings.findOne();
-    }
-}
+    },
+};
 
 module.exports = {
     EXRequestController,
     PriceController,
-    AdminController
-}
+    AdminController,
+};
