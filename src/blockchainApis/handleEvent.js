@@ -95,10 +95,7 @@ const handleTransation = async () => {
                 } else if (tx.event === "BidCreated") {
                     let txData = {
                         collectionAddress: tx.args.nftAddress,
-                        assetId:
-                            tx.args.nftAddress !== contractAddresses.StoreFront
-                                ? toBigNum(tx.args.assetId, 0)
-                                : tx.args.assetId,
+                        assetId: tx.args.assetId,
                         bidder: tx.args.bidder,
                         price: fromBigNum(tx.args.priceInWei, 18),
                         expiresAt: fromBigNum(tx.args.expiresAt, 0),
