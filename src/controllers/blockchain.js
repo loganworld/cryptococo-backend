@@ -193,7 +193,7 @@ const manageNFTs = {
                     },
                 ]);
 
-                let itemData = data[0].items.nftIndex[0].index;
+                let itemData = data[0].items[nftIndex[0].index];
 
                 let key = "items." + nftIndex[0].index + ".owner";
                 let price = "items." + nftIndex[0].index + ".marketdata.price";
