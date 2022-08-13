@@ -423,6 +423,8 @@ const manageOrder = {
         if (!result) {
             throw new Error("Database Error");
         }
+        
+        console.log(result);
 
         return result;
     },
