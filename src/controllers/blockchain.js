@@ -356,7 +356,10 @@ const manageOrder = {
                 {
                     $project: {
                         index: {
-                            $indexOfArray: ["$items.tokenID", assetId],
+                            $indexOfArray: [
+                                "$items.tokenID",
+                                assetId.toString(),
+                            ],
                         },
                     },
                 },
