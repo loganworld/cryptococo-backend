@@ -362,6 +362,9 @@ const manageOrder = {
                 },
             ]);
 
+            console.log("Props ======== ", props);
+            console.log("index -------- ", nftIndex[0].index);
+
             let key = "items." + nftIndex[0].index + ".marketdata.bidder";
             let key1 = "items." + nftIndex[0].index + ".marketdata.bidPrice";
             let key2 = "items." + nftIndex[0].index + ".marketdata.bidders";
@@ -423,8 +426,6 @@ const manageOrder = {
         if (!result) {
             throw new Error("Database Error");
         }
-        
-        console.log(result);
 
         return result;
     },
