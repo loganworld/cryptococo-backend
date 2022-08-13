@@ -47,7 +47,9 @@ module.exports = {
                             image: newImageUrl,
                         });
                         const user = await UserController.checkInfo({
-                            address: req.user.address,
+                            filter: {
+                                address: req.user.address,
+                            },
                         });
 
                         var data = {
@@ -121,7 +123,9 @@ module.exports = {
                 console.log("Error: ", err);
                 if (err) return res.sendStatus(403);
                 const user = await UserController.checkInfo({
-                    name: userData.name,
+                    filter: {
+                        name: userData.name,
+                    },
                 });
                 req.user = user;
                 next();
@@ -137,7 +141,9 @@ module.exports = {
                 console.log("Error: ", err);
                 if (err) return res.sendStatus(403);
                 const user = await UserController.checkInfo({
-                    name: userData.name,
+                    filter: {
+                        name: userData.name,
+                    },
                 });
                 if (!user.isAdmin) return res.sendStatus(403);
                 req.user = user;
