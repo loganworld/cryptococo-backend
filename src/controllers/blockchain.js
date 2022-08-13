@@ -349,6 +349,7 @@ const manageOrder = {
     placeBid: async (props) => {
         const { collectionAddress, assetId, bidder, price, expiresAt } = props;
 
+        console.log("assetID : ", assetId);
         var result = null;
         if (collectionAddress !== fileAddresses.StoreFront) {
             let nftIndex = await NFT.aggregate([
@@ -356,10 +357,7 @@ const manageOrder = {
                 {
                     $project: {
                         index: {
-                            $indexOfArray: [
-                                "$items.tokenID",
-                                assetId.toString(),
-                            ],
+                            $indexOfArray: ["$items.tokenID", assetId],
                         },
                     },
                 },
