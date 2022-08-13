@@ -29,7 +29,7 @@ function delay(delayTimes) {
  * @param {Number} d - decimals
  */
 function toBigNum(value, d = 18) {
-    return ethers.utils.parseUnits(value, d);
+    return ethers.utils.parseUnits(String(value), d);
 }
 
 /**

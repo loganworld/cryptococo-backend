@@ -349,7 +349,6 @@ const manageOrder = {
     placeBid: async (props) => {
         const { collectionAddress, assetId, bidder, price, expiresAt } = props;
 
-        console.log("assetID : ", assetId);
         var result = null;
         if (collectionAddress !== fileAddresses.StoreFront) {
             let nftIndex = await NFT.aggregate([
