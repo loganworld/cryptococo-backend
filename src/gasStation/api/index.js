@@ -112,7 +112,6 @@ module.exports = {
      */
     completePayment: async (req, res, buf) => {
         let event;
-        console.log("Event ============ ", event);
         console.log("RawBody ============ ", req.rawBody);
         try {
             event = Stripe.webhooks.constructEvent(
@@ -120,6 +119,7 @@ module.exports = {
                 req.headers["stripe-signature"],
                 "whsec_2c209b234e2d28e5b80d2e8e1aaba02d1b66f9c67bd347dc61a66cf6e5025bf6"
             );
+            console.log("Event ============ ", event);
         } catch (error) {
             return res.status(400).send(`Webhook Error: ${error.message}`);
         }
