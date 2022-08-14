@@ -21,6 +21,7 @@ const EXRequestController = {
         const request = await ExchangeRequests.updateOne(filter, {
             $set: status,
         });
+        console.log(request);
         return request;
     },
     removeRequest: async (props) => {
