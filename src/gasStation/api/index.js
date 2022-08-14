@@ -113,11 +113,13 @@ module.exports = {
     completePayment: async (req, res, buf) => {
         let event;
         try {
+            console.log(req.headers["stripe-signature"]);
             event = Stripe.webhooks.constructEvent(
                 req.rawBody,
                 req.headers["stripe-signature"],
                 "whsec_2c209b234e2d28e5b80d2e8e1aaba02d1b66f9c67bd347dc61a66cf6e5025bf6"
             );
+            console.log(req.headers["stripe-signature"]);
         } catch (error) {
             return res.status(400).send(`Webhook Error: ${error.message}`);
         }
@@ -162,13 +164,15 @@ module.exports = {
      */
     getRequests: async (req, res) => {
         const userAddress = req.user.address;
+        console.log(userAddress);
         if (!userAddress)
             return res.status(500).send({ error: "invalid auth" });
         const requests = await EXRequestController.findRequests({
             filter: {
-                address: userAddress,
+                userAddress: userAddress,
             },
         });
+        console.log(requests);
         res.status(200).send(requests);
     },
 };
