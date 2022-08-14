@@ -112,7 +112,8 @@ module.exports = {
      */
     completePayment: async (req, res, buf) => {
         let event;
-        console.log("event ============ ", event);
+        console.log("Event ============ ", event);
+        console.log("RawBody ============ ", req.rawBody);
         try {
             event = Stripe.webhooks.constructEvent(
                 req.rawBody,
