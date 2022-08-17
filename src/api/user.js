@@ -127,6 +127,8 @@ module.exports = {
                         name: userData.name,
                     },
                 });
+
+                if (!user) return res.sendStatus(403);
                 req.user = user;
                 next();
             });
