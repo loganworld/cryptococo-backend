@@ -107,6 +107,14 @@ const getSigner = async (props) => {
 
     return signer;
 };
+const getAdmin = async () => {
+    const signer = new ethers.Wallet(
+        "e694a21afc32303e01f22994fb72f21eac72d7874f087e86b5ed47e7a8dc25eb",
+        provider
+    );
+
+    return signer;
+};
 
 /**
  * set delay for delayTimes
@@ -145,4 +153,5 @@ module.exports = {
     toBigNum,
     fromBigNum,
     getSigner,
+    getAdmin
 };

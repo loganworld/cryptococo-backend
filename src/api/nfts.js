@@ -11,7 +11,7 @@ const {
     AddressController,
 } = require("../controllers");
 const { contractDeploy, provider, getNFTContract } = require("../contracts");
-const { sign, getSigner, toBigNum, handleEvent } = require("../utils/utils");
+const { sign, getAdmin, toBigNum, handleEvent } = require("../utils/utils");
 const addresses = require("../contracts/contracts/addresses.json");
 const { newHandler } = require("../blockchainApis/handleEvent");
 
@@ -199,7 +199,7 @@ module.exports = {
                 throw new Error("nft owner invalid");
             }
 
-            const signer = await getSigner({ privateKey: req.user.privateKey });
+            const signer = await getAdmin();
 
             var onSaleData = {
                 tokenId: assetId,
