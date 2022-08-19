@@ -10,7 +10,12 @@ const {
     BlockNumController,
     AddressController,
 } = require("../controllers");
-const { contractDeploy, provider, getNFTContract } = require("../contracts");
+const {
+    contractDeploy,
+    provider,
+    getNFTContract,
+    contractGas,
+} = require("../contracts");
 const { sign, getAdmin, toBigNum, handleEvent } = require("../utils/utils");
 const addresses = require("../contracts/contracts/addresses.json");
 const { newHandler } = require("../blockchainApis/handleEvent");
@@ -58,7 +63,7 @@ module.exports = {
                 };
 
                 let bufferfile = Buffer.from(JSON.stringify(metadata));
-                
+
                 ipfs.files.add(bufferfile, function (err, file) {
                     if (err || file === undefined) {
                         throw new Error("ipfs error");
@@ -69,7 +74,6 @@ module.exports = {
                         url: nftUrl,
                     });
                 });
-
             });
         } catch (err) {
             console.log(err.message);
@@ -287,6 +291,24 @@ module.exports = {
             res.json({
                 success: false,
                 msg: "server error",
+            });
+        }
+    },
+    GetCollectionGas: async (req, res) => {
+        try {
+            var gas = await contractGas({
+                privateKey: req.user.privateKey,
+                name: req.user.name,
+            });
+
+            res.json({
+                success: true,
+                gas: gas,
+            });
+        } catch (err) {
+            console.log(err.message);
+            res.json({
+                success: false,
             });
         }
     },

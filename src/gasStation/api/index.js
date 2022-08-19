@@ -13,10 +13,10 @@ AdminController.createSetting();
 
 module.exports = {
     /**
-     * api/newRequest(req,res) : make new request
+     * api/newRequest(req, res) : make new request
      * req params
      * @param {Number} buyAmount - eth amount
-     * @param {String} currency - JPY,USD,EUR
+     * @param {String} currency - JPY, USD, EUR
      * @param {String} successUrl - redirect url when payment success
      * @param {String} cancelUrl - redirect url when payment cancel
      * return session
@@ -26,8 +26,8 @@ module.exports = {
             const {
                 buyAmount,
                 currency = "JPY",
-                successUrl = "http://31.220.21.14/Author",
-                cancelUrl = "http://31.220.21.14/Author",
+                successUrl = "http://31.220.21.14",
+                cancelUrl = "http://31.220.21.14",
             } = req.body;
 
             if (buyAmount > 1) {
@@ -128,7 +128,6 @@ module.exports = {
             const session = event.data.object;
 
             try {
-                console.log(session.id);
                 await EXRequestController.updateRequest({
                     filter: { sessionId: session.id },
                     status: { status: "pending" },

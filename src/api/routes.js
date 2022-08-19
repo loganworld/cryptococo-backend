@@ -17,6 +17,7 @@ const Router = (router) => {
 
     // NFT Collection manage
     router.post("/create-collection", User.middleware, NFT.CreateCollection);
+    router.post("/get-contractgas", User.middleware, NFT.GetCollectionGas);
 
     // User Auth manage
     router.post("/user-create", User.Create);
