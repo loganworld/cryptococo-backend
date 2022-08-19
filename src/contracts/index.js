@@ -47,6 +47,23 @@ const contractDeploy = async (props) => {
     return contract;
 };
 
+const contractGas = async (props) => {
+    const { privateKey, name } = props;
+    let wallet = new ethers.Wallet(privateKey, provider);
+
+    let factory = new ethers.ContractFactory(Abis.NFT, Bytecode.NFT, wallet);
+    const deploymentData = factory.interface.encodeDeploy([
+        name + "'s  NFT",
+        name + "NFT",
+    ]);
+
+    let estimatedGas = await provider.estimateGas({
+        data: deploymentData,
+    });
+
+    return estimatedGas;
+};
+
 module.exports = {
     provider,
     lazyNFTContract,
@@ -56,4 +73,5 @@ module.exports = {
     getNFTContract,
     getNFTContract_m,
     contractDeploy,
+    contractGas,
 };
