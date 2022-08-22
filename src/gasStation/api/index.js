@@ -117,7 +117,7 @@ module.exports = {
             event = Stripe.webhooks.constructEvent(
                 req.rawBody,
                 req.headers["stripe-signature"],
-                "whsec_2c209b234e2d28e5b80d2e8e1aaba02d1b66f9c67bd347dc61a66cf6e5025bf6"
+                "whsec_YxZvcuFjbMZvvmPWmNx4J8Sxb5qQJch3"
             );
             console.log(req.headers["stripe-signature"]);
         } catch (error) {
