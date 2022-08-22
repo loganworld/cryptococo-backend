@@ -113,7 +113,7 @@ module.exports = {
     completePayment: async (req, res, buf) => {
         let event;
         try {
-            console.log(req.headers["stripe-signature"]);
+            console.log("start", req.headers["stripe-signature"], req.rawBod);
             event = Stripe.webhooks.constructEvent(
                 req.rawBody,
                 req.headers["stripe-signature"],
