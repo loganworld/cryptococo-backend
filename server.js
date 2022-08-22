@@ -7,16 +7,16 @@ const fileUpload = require("express-fileupload");
 const jwt = require("jsonwebtoken");
 
 const config = require("./src/config");
-const { Router, verify } = require("./src/api/routes");
+const { Router } = require("./src/api/routes");
 const { typeDefs } = require("./src/config/graphql");
 const { resolvers } = require("./src/graphql");
-const blockchainHandle = require("./src/blockchainApis");
+const blockchainHandler = require("./src/blockchainApis");
+const gasStation = require("./src/gasStation/api");
 
 const app = express();
 
 // Body parser middleware
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json({ verify }));
 app.use(fileUpload());
 app.use(
     cors({
@@ -35,11 +35,24 @@ mongoose
     .catch((err) => console.log(err));
 
 // Use Routes
+{
+    //gas station
+    //  Because Stripe needs the raw body, we compute it but only when hitting the Stripe callback URL.
+    app.use(express.json({
+        verify: (req, res, buf) => {
+            if (req.originalUrl.startsWith('/payment/session-complete')) {
+                req.rawBody = buf.toString();
+            }
+        }
+    }));
+    app.post("/payment/session-complete", gasStation.completePayment);
+}
+
 Router(router);
 app.use("/api", router);
 
 //blockchain Handle
-blockchainHandle();
+blockchainHandler();
 
 app.use(express.static(__dirname + "/build"));
 app.get("/*", function (req, res) {

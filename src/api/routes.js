@@ -40,7 +40,6 @@ const Router = (router) => {
         User.middleware,
         gasStation.newRequest
     );
-    router.post("/payment/session-complete", gasStation.completePayment);
     router.post("/payment/request", User.middleware, gasStation.getRequests);
 };
 
@@ -51,4 +50,4 @@ const verify = (req, res, buf) => {
     }
 }
 
-module.exports = { Router, verify }
+module.exports = { Router }

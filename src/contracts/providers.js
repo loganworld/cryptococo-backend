@@ -1,7 +1,7 @@
 require("dotenv").config();
 const { ethers } = require("ethers");
 
-const supportChainId = process.env.CHAINID;
+const supportChainId = process.env.CHAINID || 4;
 
 const RPCS = {
     // 1: "http://13.59.118.124/eth",
