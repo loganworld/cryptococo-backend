@@ -171,7 +171,10 @@ module.exports = {
                 userAddress: userAddress,
             },
         });
-        console.log(requests);
-        res.status(200).send(requests);
+        const resData = requests.filter((request) => {
+            return request.status != "initiate";
+        })
+        console.log(resData);
+        res.status(200).send(resData);
     },
 };
