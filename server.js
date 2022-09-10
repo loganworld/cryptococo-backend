@@ -38,13 +38,15 @@ mongoose
 {
     //gas station
     //  Because Stripe needs the raw body, we compute it but only when hitting the Stripe callback URL.
-    app.use(express.json({
-        verify: (req, res, buf) => {
-            if (req.originalUrl.startsWith('/payment/session-complete')) {
-                req.rawBody = buf.toString();
-            }
-        }
-    }));
+    app.use(
+        express.json({
+            verify: (req, res, buf) => {
+                if (req.originalUrl.startsWith("/payment/session-complete")) {
+                    req.rawBody = buf.toString();
+                }
+            },
+        })
+    );
     app.post("/payment/session-complete", gasStation.completePayment);
 }
 
@@ -56,6 +58,20 @@ blockchainHandler();
 
 app.use(express.static(__dirname + "/build"));
 app.get("/*", function (req, res) {
+    console.log("reqest", req.url);
+    let urlIndex = -1;
+    const staticUrls = ["static", "manifest", "favicon", "logo"];
+    staticUrls.forEach((staticUrl) => {
+        console.log(staticUrl);
+        if (urlIndex != -1) return;
+        urlIndex = req.url.indexOf(staticUrl);
+    });
+
+    if (urlIndex != -1) {
+        console.log(__dirname + "/build/" + req.url.slice(urlIndex));
+        return res.sendFile(__dirname + "/build/" + req.url.slice(urlIndex));
+    }
+
     res.sendFile(__dirname + "/build/index.html", function (err) {
         if (err) {
             res.status(500).send(err);
