@@ -58,6 +58,10 @@ module.exports = {
                 res.status(404).end();
                 return;
             }
+            if (!admin.allow) {
+                res.status(403).end();
+                return;
+            }
             const data = jwt.sign(admin._doc, process.env.JWT_SECRET, {
                 expiresIn: "144h",
             });
