@@ -12,6 +12,9 @@ const AdminSchema = new Schema({
     password: {
         type: String,
     },
+    allow: {
+        type: Boolean,
+    },
 });
 
 module.exports = ADMIN = mongoose.model("admins", AdminSchema);

@@ -115,7 +115,6 @@ module.exports = {
             res.json({ status: false });
         }
     },
-
     middleware: (req, res, next) => {
         try {
             const token = req.headers.authorization || "";
@@ -129,25 +128,6 @@ module.exports = {
                 });
 
                 if (!user) return res.sendStatus(403);
-                req.user = user;
-                next();
-            });
-        } catch (err) {
-            if (err) return res.sendStatus(403);
-        }
-    },
-    adminMiddleware: (req, res, next) => {
-        try {
-            const token = req.headers.authorization || "";
-            jwt.verify(token, process.env.JWT_SECRET, async (err, userData) => {
-                console.log("Error: ", err);
-                if (err) return res.sendStatus(403);
-                const user = await UserController.checkInfo({
-                    filter: {
-                        name: userData.name,
-                    },
-                });
-                if (!user.isAdmin) return res.sendStatus(403);
                 req.user = user;
                 next();
             });

@@ -25,14 +25,19 @@ const Router = (router) => {
     router.post("/user-update", User.middleware, User.updateInfo);
 
     // Admin Auth manage
+    router.post("/admin-check", Admin.Check);
     router.post("/admin-create", Admin.Create);
     router.post("/admin-login", Admin.Login);
-    router.post("/admin-update", Admin.Update, User.updateInfo);
-
+    router.post("/admin-update", Admin.adminMiddleware, Admin.Update);
+    router.post("/admin-nft-delete", Admin.adminMiddleware, Admin.RemoveNFT);
+    router.post("/admin-user-delete", Admin.adminMiddleware, Admin.RemoveUser);
+    router.post("/get-all-admin", Admin.adminMiddleware, Admin.GetAllAdmin);
+    router.post("/change-allow", Admin.adminMiddleware, Admin.UpdateAllow);
+    router.post("/remove-admin", Admin.adminMiddleware, Admin.RemoveAdmin);
 
     // admin actions
-    router.post("/admin/getFee", User.adminMiddleware, gasStation.getFee);
-    router.post("/admin/setFee", User.adminMiddleware, gasStation.setAdminFee);
+    router.post("/admin/getFee", Admin.adminMiddleware, gasStation.getFee);
+    router.post("/admin/setFee", Admin.adminMiddleware, gasStation.setAdminFee);
 
     // credit card
     router.post(
@@ -45,9 +50,9 @@ const Router = (router) => {
 
 //  Because Stripe needs the raw body, we compute it but only when hitting the Stripe callback URL.
 const verify = (req, res, buf) => {
-    if (req.originalUrl.startsWith('/api/payment/session-complete')) {
+    if (req.originalUrl.startsWith("/api/payment/session-complete")) {
         req.rawBody = buf.toString();
     }
-}
+};
 
-module.exports = { Router }
+module.exports = { Router };
